@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-<title>挑战和INFP谈恋爱 · 12关闯关</title>
+<title>挑战和各种人格谈恋爱 · 闯关测试</title>
 <style>
   :root {
     --bg: #f8f6f2;
@@ -89,6 +89,141 @@
   /* ===== 页面容器 ===== */
   .screen { display:none; flex:1; flex-direction:column; }
   .screen.active { display:flex; }
+
+  /* ===== 选择页 ===== */
+  .select-header {
+    text-align: center;
+    padding: 28px 0 8px;
+  }
+  .select-header .big-icon {
+    font-size: 56px;
+    display: block;
+    margin-bottom: 12px;
+    animation: float 3s ease-in-out infinite;
+  }
+  @keyframes float {
+    0%,100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  .select-header h1 {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text);
+    line-height: 1.4;
+  }
+  .select-header h1 span {
+    background: linear-gradient(135deg, #c06c84, #6c5b7b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .select-header .subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 6px;
+  }
+
+  .category-section {
+    margin-bottom: 20px;
+  }
+  .category-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 12px;
+    padding-left: 4px;
+    letter-spacing: 0.5px;
+  }
+  .category-title .cat-icon {
+    font-size: 18px;
+  }
+  .category-title .cat-count {
+    font-size: 11px;
+    font-weight: 400;
+    color: var(--text-light);
+    margin-left: auto;
+  }
+
+  .type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .type-card {
+    background: var(--card);
+    border-radius: 14px;
+    padding: 18px 14px;
+    box-shadow: var(--shadow);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    position: relative;
+    overflow: hidden;
+    border-left: 4px solid transparent;
+    text-align: center;
+  }
+  .type-card:active {
+    transform: scale(0.96);
+  }
+  .type-card .card-emoji {
+    font-size: 36px;
+    display: block;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease;
+  }
+  .type-card:hover .card-emoji {
+    transform: scale(1.15);
+  }
+  .type-card .card-name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 3px;
+  }
+  .type-card .card-fullname {
+    font-size: 11px;
+    color: var(--text-light);
+    margin-bottom: 6px;
+    display: block;
+  }
+  .type-card .card-desc {
+    font-size: 11px;
+    color: var(--text-light);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .type-card .card-badge {
+    display: inline-block;
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-weight: 600;
+    margin-top: 8px;
+    letter-spacing: 0.5px;
+  }
+
+  .type-card.placeholder {
+    opacity: 0.5;
+    cursor: default;
+    border-left-color: var(--border) !important;
+    border: 2px dashed var(--border);
+    background: transparent;
+    box-shadow: none;
+  }
+  .type-card.placeholder .card-emoji {
+    filter: grayscale(1);
+  }
+  .type-card.placeholder .coming-soon {
+    font-size: 11px;
+    color: var(--text-light);
+    font-weight: 600;
+    margin-top: 4px;
+  }
 
   /* ===== 欢迎页 ===== */
   .welcome { align-items:center; justify-content:center; text-align:center; }
@@ -317,23 +452,45 @@
     50% { transform:scale(1.08); }
   }
   .breathing { animation: breathe 2s ease-in-out infinite; }
+
+  /* ===== 选择页底部 ===== */
+  .select-footer {
+    text-align: center;
+    padding: 8px 0 32px;
+    font-size: 12px;
+    color: var(--text-light);
+    line-height: 1.8;
+  }
 </style>
 </head>
 <body>
 
 <div class="app" id="app">
 
-  <!-- ==================== 欢迎页 ==================== -->
-  <div class="screen active" id="screen-welcome">
+  <!-- ==================== 选择页 ==================== -->
+  <div class="screen active" id="screen-select">
+    <div class="select-header">
+      <span class="big-icon">💘</span>
+      <h1>挑战和<span>各种人格</span>谈恋爱</h1>
+      <p class="subtitle">选一个类型，看看你能接住Ta的心吗？</p>
+    </div>
+    <div id="select-categories"></div>
+    <div class="select-footer">
+      更多类型即将上线 ❤️<br>你想挑战哪种人格？先来试试吧
+    </div>
+  </div>
+
+  <!-- ==================== 欢迎页（类型详情+规则） ==================== -->
+  <div class="screen" id="screen-welcome">
     <div class="header">
-      <span class="emoji">🦋</span>
-      <h1>挑战和 INFP 谈恋爱</h1>
-      <p class="subtitle">12关闯关测试 · 你准备好了吗？</p>
+      <span class="emoji" id="welcome-emoji">🦋</span>
+      <h1 id="welcome-title">挑战和 INFP 谈恋爱</h1>
+      <p class="subtitle" id="welcome-subtitle">12关闯关测试 · 你准备好了吗？</p>
     </div>
     <div class="welcome" style="display:flex;">
-      <span class="big-emoji">💘</span>
-      <h2>你能接住INFP的心吗？</h2>
-      <p>INFP——理想主义的调停者<br>敏感、浪漫、追求灵魂伴侣</p>
+      <span class="big-emoji" id="welcome-big-emoji">💘</span>
+      <h2 id="welcome-question">你能接住INFP的心吗？</h2>
+      <p id="welcome-desc">INFP——理想主义的调停者<br>敏感、浪漫、追求灵魂伴侣</p>
       <div class="rules">
         <h3>📋 闯关规则</h3>
         <ul>
@@ -344,14 +501,15 @@
         </ul>
       </div>
       <button class="btn btn-primary" onclick="startGame()">开始挑战 ❤️</button>
+      <button class="btn btn-outline" onclick="navigateTo('home')" style="margin-top:8px;">← 选择其他类型</button>
     </div>
   </div>
 
   <!-- ==================== 答题页 ==================== -->
   <div class="screen" id="screen-game">
     <div class="header" style="padding-top:16px;">
-      <span class="emoji">🦋</span>
-      <h1>挑战 INFP 谈恋爱</h1>
+      <span class="emoji" id="game-emoji">🦋</span>
+      <h1 id="game-title">挑战 INFP 谈恋爱</h1>
     </div>
     <div class="progress-wrap">
       <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
@@ -381,8 +539,8 @@
   <!-- ==================== 通关页 ==================== -->
   <div class="screen" id="screen-win">
     <div class="header">
-      <span class="emoji">🦋</span>
-      <h1>挑战 INFP 谈恋爱</h1>
+      <span class="emoji" id="win-emoji">🦋</span>
+      <h1 id="win-type-title">挑战 INFP 谈恋爱</h1>
     </div>
     <div class="result-screen" style="display:flex;">
       <div class="result-card">
@@ -393,7 +551,7 @@
         <p class="quote" id="win-quote"></p>
         <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;" id="win-lives-left"></p>
         <button class="btn btn-primary" onclick="restartGame()">🔥 再挑战一次</button>
-        <button class="btn btn-outline" onclick="restartGame()" style="margin-top:6px;">📋 解锁其他 MBTI</button>
+        <button class="btn btn-outline" onclick="navigateTo('home')">🎯 挑战其他类型</button>
       </div>
     </div>
   </div>
@@ -401,18 +559,17 @@
   <!-- ==================== 失败页 ==================== -->
   <div class="screen" id="screen-lose">
     <div class="header">
-      <span class="emoji">🦋</span>
-      <h1>挑战 INFP 谈恋爱</h1>
+      <span class="emoji" id="lose-emoji">🦋</span>
+      <h1 id="lose-type-title">挑战 INFP 谈恋爱</h1>
     </div>
     <div class="result-screen game-over" style="display:flex;">
       <div class="result-card">
         <span class="trophy">💔</span>
         <h2>闯关失败</h2>
         <div class="score" style="font-size:36px;background:linear-gradient(135deg,#e07b7b,#c06c84);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="lose-progress"></div>
-        <p style="font-size:14px;color:var(--text-light);line-height:1.7;margin:12px 0 20px;">
-          INFP的心很柔软，需要用心去感受。<br>别灰心，再来一次吧！
-        </p>
+        <p style="font-size:14px;color:var(--text-light);line-height:1.7;margin:12px 0 20px;" id="lose-msg"></p>
         <button class="btn btn-primary" onclick="restartGame()">🔄 重新挑战</button>
+        <button class="btn btn-outline" onclick="navigateTo('home')" style="margin-top:6px;">🎯 挑战其他类型</button>
       </div>
     </div>
   </div>
@@ -420,225 +577,2346 @@
 </div>
 
 <script>
-// ============================
-// 题库数据
-// ============================
-const questions = [
+// ============================================================
+// 分类定义
+// ============================================================
+const CATEGORIES = {
+  mbti: { id: 'mbti', name: 'MBTI 人格', icon: '🧠', order: 1 },
+  winback: { id: 'winback', name: '挽回挑战', icon: '💔', order: 2 },
+  attachment: { id: 'attachment', name: '依恋类型', icon: '💞', order: 3 }
+};
+
+// ============================================================
+// 人格类型题库
+// ============================================================
+const personalityTypes = [
+  // ==================== INFP ====================
   {
-    id: 1,
-    title: "第1关：初次约会",
-    scene: "你和INFP第一次单独约会，Ta选了一家安静的独立书店咖啡馆。你们坐下后，Ta轻轻摩挲着咖啡杯，似乎有点紧张。",
-    question: "你会怎么开启话题？",
-    options: [
-      { label: "A", text: "你平时喜欢看什么类型的书？我最近在读一本关于存在主义的书，很有意思。", correct: true,
-        feedback: "INFP眼睛亮了！Ta最喜欢深度精神交流，这个开场直击Ta的心。" },
-      { label: "B", text: "这家店环境真不错，你经常来吗？我平时很少来这种地方。", correct: false,
-        feedback: "Ta觉得你在客套，有点失望。" },
-      { label: "C", text: "你今天穿得真好看，这裙子很配你。", correct: false,
-        feedback: "INFP不喜欢被过度关注外表，会觉得你肤浅。" },
-      { label: "D", text: "我其实很少看书，你有什么推荐吗？简单点的。", correct: false,
-        feedback: "「简单点的」让INFP觉得你在敷衍，不愿意付出精神努力。" }
+    id: 'infp',
+    category: 'mbti',
+    name: 'INFP',
+    fullName: '调停者',
+    emoji: '🦋',
+    theme: { primary: '#6c5b7b', accent: '#c06c84', gold: '#d4a574' },
+    description: '理想主义的调停者，敏感、浪漫、追求灵魂伴侣',
+    tags: ['敏感', '浪漫', '理想主义'],
+    winQuotes: [
+      '「谢谢你看懂了我藏在壳里的那颗心。你让我觉得，也许理想主义真的可以在这个世界存活下去。」'
+    ],
+    loseMsg: 'INFP的心很柔软，需要用心去感受。别灰心，再来一次吧！',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：初次约会",
+        scene: "你和INFP第一次单独约会，Ta选了一家安静的独立书店咖啡馆。你们坐下后，Ta轻轻摩挲着咖啡杯，似乎有点紧张。",
+        question: "你会怎么开启话题？",
+        options: [
+          { label: "A", text: "你平时喜欢看什么类型的书？我最近在读一本关于存在主义的书，很有意思。", correct: true,
+            feedback: "INFP眼睛亮了！Ta最喜欢深度精神交流，这个开场直击Ta的心。" },
+          { label: "B", text: "这家店环境真不错，你经常来吗？我平时很少来这种地方。", correct: false,
+            feedback: "Ta觉得你在客套，有点失望。" },
+          { label: "C", text: "你今天穿得真好看，这裙子很配你。", correct: false,
+            feedback: "INFP不喜欢被过度关注外表，会觉得你肤浅。" },
+          { label: "D", text: "我其实很少看书，你有什么推荐吗？简单点的。", correct: false,
+            feedback: "「简单点的」让INFP觉得你在敷衍，不愿意付出精神努力。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：突如其来的情绪低落",
+        scene: "你们在一起一个月了，这天约会时，INFP明显心不在焉，话很少，笑容也很勉强。你问Ta怎么了，Ta说「没事，可能有点累」。",
+        question: "你接下来会怎么做？",
+        options: [
+          { label: "A", text: "安静地握住Ta的手，轻声说：「没关系，不想说就不说，我在这陪你。」", correct: true,
+            feedback: "INFP感受到了无条件的接纳，内心防线松动了。" },
+          { label: "B", text: "你肯定有事，说出来嘛，我帮你分析分析。", correct: false,
+            feedback: "Ta还没准备好，逼问会让Ta更加退缩。" },
+          { label: "C", text: "那我们换个开心点的地方吧，去吃点好的心情就好了！", correct: false,
+            feedback: "INFP觉得你在回避Ta的情绪，不被理解。" },
+          { label: "D", text: "当作没注意到，继续聊自己的事。", correct: false,
+            feedback: "Ta会觉得你根本不在乎Ta的感受。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：你忘记了重要纪念日",
+        scene: "今天是你们恋爱100天的日子，但你因为工作太忙完全忘记了。晚上见面时，你发现INFP精心准备了晚餐和小礼物。你看到Ta期待的眼神，突然意识到今天是什么日子……",
+        question: "你的反应是？",
+        options: [
+          { label: "A", text: "立刻放下东西，拥抱Ta，真诚地说：「天哪我真的忘了，对不起！这几天压力太大了脑子都是乱的。你太用心了，我好感动。」", correct: true,
+            feedback: "真诚的道歉+情感表达，INFP最吃这一套。" },
+          { label: "B", text: "抱歉我忘了，别生气嘛，周末带你去吃大餐补上。", correct: false,
+            feedback: "「补偿式」回应让INFP觉得你在走形式，没有真心。" },
+          { label: "C", text: "100天有什么好过的呀，重要的日子还多着呢。", correct: false,
+            feedback: "Ta觉得你根本不重视这段感情。" },
+          { label: "D", text: "赶紧点开外卖App：「我现在就给你订束花！」", correct: false,
+            feedback: "临时补救显得刻意，INFP看重的是真心而非物质。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：你们发生了第一次争执",
+        scene: "你们讨论一个社会话题时，观点完全相反。INFP越说越激动，最后眼眶红了，说了一句：「你根本不懂我在说什么。」然后沉默了。",
+        question: "你会怎么做？",
+        options: [
+          { label: "A", text: "深吸一口气，放软语气：「可能我刚才没表达好。你能再跟我说一遍你的想法吗？我想认真听。」", correct: true,
+            feedback: "你放下了输赢，选择了理解。INFP的眼泪变成了笑容。" },
+          { label: "B", text: "继续摆事实讲道理，试图说服Ta。", correct: false,
+            feedback: "INFP觉得你在「碾压」Ta，而不是在交流。" },
+          { label: "C", text: "好吧好吧你说的都对，我们不吵了。", correct: false,
+            feedback: "敷衍式妥协比吵架更伤人，INFP会觉得「你根本不想和我沟通」。" },
+          { label: "D", text: "直接走开，让彼此冷静一下。", correct: false,
+            feedback: "冷处理=冷漠，INFP会在你离开的时间里脑补一万种分手的理由。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：Ta想要独处",
+        scene: "交往两个月后，INFP突然说：「我这周末想一个人待着，不出去了。」Ta的语气很平静，但你觉得不太寻常。",
+        question: "你的回应是？",
+        options: [
+          { label: "A", text: "「好呀，那你好好充电。不过如果有任何事想找我，我随时在。」然后真的不去打扰Ta。", correct: true,
+            feedback: "你给了Ta空间又不失温暖，INFP会觉得你真的很懂Ta。" },
+          { label: "B", text: "你是不是生气了？是不是我哪里做得不好？", correct: false,
+            feedback: "过度解读会让INFP觉得和你在一起很累，连休息都要解释。" },
+          { label: "C", text: "好吧……那你什么时候想见我？明天行吗？", correct: false,
+            feedback: "刚给空间就急着约下次，INFP会觉得压力又回来了。" },
+          { label: "D", text: "周末给你点惊喜！我偷偷过去找你！", correct: false,
+            feedback: "惊喜变惊吓，INFP的独处时间被破坏会非常烦躁。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：Ta分享了一件「小事」",
+        scene: "INFP兴奋地给你看Ta刚写的一首小诗，眼睛亮晶晶地等你评价。诗写得……说实话，有点抽象，你没太看懂。",
+        question: "你该怎么说？",
+        options: [
+          { label: "A", text: "认真读两遍，然后说：「我喜欢这句——『月光在茶杯里打了个盹』，很有画面感。你写的时候在想什么？」", correct: true,
+            feedback: "你抓住了具体的闪光点并表达好奇，INFP会滔滔不绝地跟你分享创作心路。" },
+          { label: "B", text: "写得不错呀！你真有才华！", correct: false,
+            feedback: "太笼统的夸奖=没认真看，INFP能敏锐地察觉到你在敷衍。" },
+          { label: "C", text: "说实话我没太看懂，但你喜欢就好。", correct: false,
+            feedback: "虽然诚实，但INFP会觉得你不愿意走进Ta的世界。" },
+          { label: "D", text: "你怎么不写点通俗易懂的东西？", correct: false,
+            feedback: "这是对INFP灵魂的直接否定，伤害值拉满。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：你的朋友不喜欢Ta",
+        scene: "你带INFP参加朋友聚会，Ta全程很安静。聚会结束后，你的好朋友私聊你说：「你对象好闷啊，你们真的合适吗？」",
+        question: "你该怎么办？",
+        options: [
+          { label: "A", text: "对朋友说：「Ta只是慢热，熟了以后很可爱的。下次换个安静点的地方，你再给Ta一次机会？」同时不把朋友的话告诉INFP。", correct: true,
+            feedback: "你在外面保护了Ta，也没让负面评价影响你们的关系。INFP如果知道了会很感动。" },
+          { label: "B", text: "把朋友的话告诉INFP，然后说「你得外向一点才行」。", correct: false,
+            feedback: "INFP会觉得自己被嫌弃，自信心受到严重打击。" },
+          { label: "C", text: "以后再也不带INFP见朋友了。", correct: false,
+            feedback: "隔离不是保护，INFP会觉得你在「藏」着Ta。" },
+          { label: "D", text: "跟朋友吵一架：「你不懂Ta就别乱说！」", correct: false,
+            feedback: "过度维护反而会让朋友和INFP都尴尬。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：Ta为你做了一件「没用」的礼物",
+        scene: "INFP花了两个星期，用手工做了一本你们两个人的「恋爱手账」，里面有你们的照片、电影票根、手写的小故事。你翻了翻，发现有些页被胶水弄皱了，字迹也有点歪。",
+        question: "你的反应是？",
+        options: [
+          { label: "A", text: "一页一页认真翻完，然后抱紧Ta：「这是我收到过最用心的礼物。以后我们每年做一本好吗？」", correct: true,
+            feedback: "你看到了背后的心意而非成品的不完美。INFP会记住这句话很久很久。" },
+          { label: "B", text: "「哇好可爱！不过你可以买个更好的本子，这个纸太薄了。」", correct: false,
+            feedback: "在INFP听来=「你做的东西不够好」，心血被否定。" },
+          { label: "C", text: "笑着翻了两下放在一边：「谢谢宝贝！」", correct: false,
+            feedback: "敷衍的态度让INFP觉得自己的心意不被珍视。" },
+          { label: "D", text: "「你花那么多时间做这个干嘛呀，买一本不就行了。」", correct: false,
+            feedback: "这句话等于在说「你的用心一文不值」。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：Ta突然说要辞职去追梦",
+        scene: "INFP有一天认真地对你说：「我想辞职了，我想去学插画/做音乐/写小说。我知道这不太现实，但是……」Ta看着你，既期待又害怕。",
+        question: "你的回应是？",
+        options: [
+          { label: "A", text: "「我支持你追梦。不过我们可以一起做个计划——先存几个月的生活费，业余时间试试水，感觉稳了再辞职，好吗？」", correct: true,
+            feedback: "你既没有否定梦想，也给了现实的保护。INFP会觉得「有人懂我，还愿意帮我落地」。这就是Ta想要的安全感。" },
+          { label: "B", text: "「别傻了，现实点行不行？你画画能养活自己吗？」", correct: false,
+            feedback: "直接否定梦想=否定INFP的灵魂，Ta会非常受伤。" },
+          { label: "C", text: "「去吧！我养你！」", correct: false,
+            feedback: "虽然听起来很浪漫，但INFP内心会觉得压力——「万一失败了呢？」不加思考的支持显得不成熟。" },
+          { label: "D", text: "「等你找到下份工作再说吧。」", correct: false,
+            feedback: "你完全回避了Ta真正想说的——Ta在试探你支不支持Ta的梦想。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta的「小习惯」让你不舒服",
+        scene: "INFP有一个让你不太舒服的习惯——比如，Ta经常在约会时走神发呆，你觉得不够投入。",
+        question: "你该怎么跟Ta沟通这件事？",
+        options: [
+          { label: "A", text: "「我注意到你有时候会走神，我在想是不是我讲的话题不够吸引你？还是你需要一点时间放空？我想知道你的感受。」", correct: true,
+            feedback: "你把问题定位在「我-你之间」而非「你-有问题」，INFP会非常愿意配合。" },
+          { label: "B", text: "你能不能跟我在一起的时候专心一点？", correct: false,
+            feedback: "「你」字开头等于指责，INFP会退缩进自己的壳里。" },
+          { label: "C", text: "每次Ta走神你就叹一口气。", correct: false,
+            feedback: "消极暗示会让INFP觉得自己怎么做都不对。" },
+          { label: "D", text: "我觉得你根本不在乎我。", correct: false,
+            feedback: "过度解读会直接引爆INFP的情绪雷区。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：Ta的原生家庭问题被触发了",
+        scene: "你们在聊童年时，INFP突然沉默了，眼圈泛红但强忍着，说了一句：「有些事我不想说。」",
+        question: "你的应对是？",
+        options: [
+          { label: "A", text: "放下手里的东西，安静地坐近一点，说：「不说也没关系，我就在这儿。」", correct: true,
+            feedback: "边界感+陪伴感，这是INFP最需要的那种「安全的爱」。" },
+          { label: "B", text: "说出来会好受一点，我是你男朋友/女朋友啊。", correct: false,
+            feedback: "你越逼，Ta越关上心门。" },
+          { label: "C", text: "不想说就不说，来吃这个，超好吃！", correct: false,
+            feedback: "转移话题=回避深度，INFP会判定你「不懂我」。" },
+          { label: "D", text: "也分享一个自己不开心的经历，试图「比惨」。", correct: false,
+            feedback: "比惨=否定Ta的感受，会让Ta觉得「我的情绪不值得被重视」。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「你爱我什么」",
+        scene: "一个安静的夜晚，INFP靠在你的肩膀上，突然小声问：「你爱我什么？」",
+        question: "你的回答是？（这一关是重头戏）",
+        options: [
+          { label: "A", text: "认真思考后说：「爱你发呆时的样子，爱你写的诗里那种温柔，爱你会为一只流浪猫蹲在路边半小时，爱你明明自己难过却先问我『你还好吗』——最重要的是，跟你在一起，我觉得世界没那么糟糕了。」", correct: true,
+            feedback: "你不仅说出了具体特质，还提到了Ta的内在价值和你的情感体验。INFP听完会哭，然后紧紧抱住你。这是Ta一生都在等的回答。" },
+          { label: "B", text: "爱你好看，爱你温柔，爱你对我好。", correct: false,
+            feedback: "太笼统，像模板。INFP会觉得你爱的只是「女朋友」这个角色，不是真正的Ta。" },
+          { label: "C", text: "我也说不清，就是感觉对了。", correct: false,
+            feedback: "「说不清」=没走心。INFP会把这句话记很久，作为「你不够爱」的证据。" },
+          { label: "D", text: "你为什么突然问这个？是不是我做错什么了？", correct: false,
+            feedback: "你在回避问题，还把压力抛回给Ta。INFP会后悔问了这个问题。" }
+        ]
+      }
     ]
   },
+
+  // ==================== ENFP ====================
   {
-    id: 2,
-    title: "第2关：突如其来的情绪低落",
-    scene: "你们在一起一个月了，这天约会时，INFP明显心不在焉，话很少，笑容也很勉强。你问Ta怎么了，Ta说「没事，可能有点累」。",
-    question: "你接下来会怎么做？",
-    options: [
-      { label: "A", text: "安静地握住Ta的手，轻声说：「没关系，不想说就不说，我在这陪你。」", correct: true,
-        feedback: "INFP感受到了无条件的接纳，内心防线松动了。" },
-      { label: "B", text: "你肯定有事，说出来嘛，我帮你分析分析。", correct: false,
-        feedback: "Ta还没准备好，逼问会让Ta更加退缩。" },
-      { label: "C", text: "那我们换个开心点的地方吧，去吃点好的心情就好了！", correct: false,
-        feedback: "INFP觉得你在回避Ta的情绪，不被理解。" },
-      { label: "D", text: "当作没注意到，继续聊自己的事。", correct: false,
-        feedback: "Ta会觉得你根本不在乎Ta的感受。" }
+    id: 'enfp',
+    category: 'mbti',
+    name: 'ENFP',
+    fullName: '竞选者',
+    emoji: '🦄',
+    theme: { primary: '#e8913a', accent: '#f4a261', gold: '#e9c46a' },
+    description: '热情的自由灵魂，好奇心旺盛，永远在追逐下一个灵感',
+    tags: ['热情', '自由', '好奇'],
+    winQuotes: [
+      '「你是我遇到过唯一一个，既能跟上我的节奏，又不会试图束缚我的人。跟你在一起，自由和爱居然可以同时拥有。」'
+    ],
+    loseMsg: 'ENFP需要自由和被理解的空间。别试图拴住一只独角兽，跟Ta一起飞翔吧！',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：初次约会",
+        scene: "ENFP带你去了一个你从没去过的地方——一家藏在巷子深处的复古玩具店+猫咪咖啡馆。Ta一边撸猫一边兴奋地跟你说：「你知道吗，我上周发现了这个地方，然后我就想一定要带你来看看！」",
+        question: "你的回应是？",
+        options: [
+          { label: "A", text: "「哇这是什么宝藏地方！你是怎么发现的？快带我转转，我想听你讲每个角落的故事。」", correct: true,
+            feedback: "ENFP眼睛里全是星星！Ta最享受的事情就是和你分享Ta发现的「世界的美好角落」。" },
+          { label: "B", text: "「挺特别的，不过你提前说一下嘛，我穿得不太适合来这种地方。」", correct: false,
+            feedback: "ENFP的即兴是一份礼物，抱怨会让Ta觉得自己的浪漫被泼了冷水。" },
+          { label: "C", text: "「还不错，不过下次去我推荐的那家餐厅吧。」", correct: false,
+            feedback: "你在暗示Ta的安排不够好，ENFP的热情会瞬间降温。" },
+          { label: "D", text: "默默跟着逛但一直看手机。", correct: false,
+            feedback: "ENFP最怕的就是自己的热情得不到回应，这比吵架还让Ta难受。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta突然改了计划",
+        scene: "你们约好周六去爬山，装备都准备好了。周五晚上ENFP突然打电话：「对不起！我刚刚看到一个超酷的即兴戏剧工作坊，就在明天！我们不去爬山了，去演戏吧！」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「哈哈哈哈你这人！行吧行吧，即兴戏剧听起来确实很好玩。不过下次爬山你先答应我的，不许再改了哦。」", correct: true,
+            feedback: "你接纳了Ta的即兴，也温和地表达了边界。ENFP会觉得你既有趣又可靠。" },
+          { label: "B", text: "「不行，我准备了这么久，按照原计划来。」", correct: false,
+            feedback: "ENFP觉得你像一个牢笼。虽然Ta最终会去爬山，但一路上的沉默会让你后悔。" },
+          { label: "C", text: "「你每次都这样！能不能靠谱一次？」", correct: false,
+            feedback: "对ENFP说「靠谱」是核武器级别的伤害。Ta不是不靠谱，只是活在灵感里。" },
+          { label: "D", text: "「那你一个人去吧，我自己去爬山。」", correct: false,
+            feedback: "分开行动本身没问题，但这种冷淡的处理方式会让ENFP觉得「你不喜欢跟我在一起」。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：Ta同时开了五个新爱好",
+        scene: "这个月ENFP的房间里多了一把尤克里里、一套水彩颜料、一本日语教材、一个滑板和一台面包机。Ta每个都玩了几天就放下了。这天Ta兴奋地给你看Ta刚买的陶艺体验课：「我发现了人生新方向！」",
+        question: "你的反应是？",
+        options: [
+          { label: "A", text: "「哈哈哈哈你的精力也太旺盛了！陶艺听起来很酷，去试试嘛，反正体验课又不贵。不过那个尤克里里你要不要考虑下周拿出来弹一下？我还挺想听的。」", correct: true,
+            feedback: "你欣赏Ta的热情也温柔地提醒了坚持。ENFP会觉得「有人欣赏我的好奇心，真好」。" },
+          { label: "B", text: "「你又开始了，上次买的尤克里里还没弹过三次吧？浪费钱。」", correct: false,
+            feedback: "否定Ta的探索欲就是否定Ta的灵魂。ENFP不是浪费，是「广泛采样」。" },
+          { label: "C", text: "「我觉得你应该先专注做好一件事。」", correct: false,
+            feedback: "「专注」这个词在ENFP听来是束缚。Ta的世界里，万物皆可探索。" },
+          { label: "D", text: "「好啊我陪你去，不过你要答应我这回至少学完一期。」", correct: false,
+            feedback: "虽然是支持的，但附加条件会让ENFP觉得有压力。不如纯粹地鼓励。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta需要你给承诺",
+        scene: "ENFP难得认真地看着你：「我想知道，你对我们的未来有没有想法？我不是要你给一个详细的规划，但是……我需要知道你是认真的。」Ta的语气里有一种少见的脆弱。",
+        question: "你怎么回答？",
+        options: [
+          { label: "A", text: "放下手边的事，认真地看着Ta：「我是认真的。虽然我不知道未来具体会怎样，但我知道我想跟你一起探索。无论下一个冒险是什么，我想你在我身边。」", correct: true,
+            feedback: "ENFP不需要你规划好一切，但需要确认「你选择了Ta」。这个回答既有承诺又有自由，完美。" },
+          { label: "B", text: "「当然认真啊，我跟你在一起多久了你还不清楚？」", correct: false,
+            feedback: "模糊的回应让ENFP更焦虑。Ta此刻需要的不是反问，是一个确定的眼神。" },
+          { label: "C", text: "「等你稳定一点我们再谈未来吧。」", correct: false,
+            feedback: "这句话在ENFP耳中等于「你还没达到我要求的标准」，杀伤力极大。" },
+          { label: "D", text: "「未来？我连下个月的计划都做不好，别问我。」", correct: false,
+            feedback: "虽然是玩笑，但ENFP罕见地敞开心扉时被用玩笑回应，会让Ta默默关上心门。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：Ta的情绪过山车",
+        scene: "你们在一起三个月了，你发现ENFP的情绪变化很快——早上还在为「人生的意义是什么」陷入沉思，下午就拉着你去看夕阳笑得像个孩子。这天晚上Ta突然安静了：「有时候我觉得自己太情绪化了，你会不会觉得累？」",
+        question: "你该怎么说？",
+        options: [
+          { label: "A", text: "「不会。我喜欢你的每一面——包括你沉思的早晨和狂喜的午后。情绪丰富不是缺点，是世界在你心里留下了更多颜色。」", correct: true,
+            feedback: "ENFP最怕被人说「太过了」。你不仅接纳了，还说这是美——Ta会爱你到骨子里。" },
+          { label: "B", text: "「确实有点累，但还好。」", correct: false,
+            feedback: "虽然是实话，但ENFP会把「累」这个字放大十倍，然后开始担心你随时会离开。" },
+          { label: "C", text: "「你多跟朋友聊聊就好了，别老想太多。」", correct: false,
+            feedback: "你在建议Ta「别想太多」。ENFP的深度思考不是bug，是feature。" },
+          { label: "D", text: "「没事的，过两天就好了。」", correct: false,
+            feedback: "轻飘飘的安慰=不走心，ENFP会觉得你不愿意进入Ta的情绪世界。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：Ta在派对上玩疯了",
+        scene: "你们一起参加一个派对，ENFP成了全场的焦点——Ta跟每个人都聊得很开心，讲了三个笑话，还即兴表演了一段。你一个人坐在角落里，心里有点不是滋味。回家的路上Ta兴奋地问：「今晚是不是超好玩！」",
+        question: "你会说什么？",
+        options: [
+          { label: "A", text: "「你今晚像个太阳一样照亮了整个房间。不过我承认我有点小吃醋——下次能不能偶尔回来跟我说两句话？我想跟你一起发光。」", correct: true,
+            feedback: "你肯定了Ta的魅力，也诚实地表达了需求。ENFP最感激的就是这种「既欣赏我又敢于跟我说真话」的伴侣。" },
+          { label: "B", text: "「你今晚都没怎么理我。」", correct: false,
+            feedback: "直接指责会让ENFP从快乐的山顶跌入自责的谷底。Ta不是故意的——只是太投入了。" },
+          { label: "C", text: "勉强笑笑：「挺好的。」然后全程沉默。", correct: false,
+            feedback: "ENFP最怕猜你的情绪。沉默比争吵更折磨，Ta会脑补你讨厌Ta的所有朋友。" },
+          { label: "D", text: "「你以后能不能别在那么多人面前那么疯？很尴尬。」", correct: false,
+            feedback: "你在要求Ta压抑天性。ENFP会开始怀疑你们是不是真的合适。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：你的朋友说Ta「不够靠谱」",
+        scene: "你的好朋友对你说：「你对象人挺好的，就是感觉不太靠谱吧？换了三份工作，爱好每周换一个。你真的放心跟Ta长期走下去吗？」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「Ta不是不靠谱，是生活方式不一样。Ta对感情的忠诚度比我见过的任何人都高。工作换来换去是因为Ta在找真正热爱的事——我觉得这比死守一份不喜欢的工作更需要勇气。」", correct: true,
+            feedback: "你在外面为Ta辩护，而且辩护得有理有据。如果ENFP知道了一定会觉得「这个人真的懂我」。" },
+          { label: "B", text: "「我也觉得有点……但是喜欢没办法。」", correct: false,
+            feedback: "你在朋友面前默认了对Ta的负面评价。ENFP如果知道了会觉得被背叛。" },
+          { label: "C", text: "「别管我们的事了，我自己会处理。」", correct: false,
+            feedback: "你回避了问题，朋友会更不看好你们。" },
+          { label: "D", text: "把朋友的话原封不动告诉ENFP：「他们说你不太靠谱，我觉得你改改吧。」", correct: false,
+            feedback: "传递负面评价+要求改变=双重伤害，ENFP会觉得自己被全世界否定。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：Ta想做一件「疯狂」的事",
+        scene: "ENFP眼睛发光地跟你说：「我决定了！下个月我要去云南做一个月义工，教山区的孩子画画！你要不要一起去？」你知道Ta这个月刚入职了新公司。",
+        question: "你的反应是？",
+        options: [
+          { label: "A", text: "「这太像你了！不过你先跟上司谈谈能不能请假或者远程？如果不行，我们可以等年假一起去，或者我周末飞过去看你。」", correct: true,
+            feedback: "你没有熄灭Ta的热情，只是加了一个现实的缓冲。ENFP会感激你保护了Ta的梦想，也保护了Ta的生活。" },
+          { label: "B", text: "「你疯了吧？刚入职一个月就要请一个月假？你会被开除的。」", correct: false,
+            feedback: "直接叫停=你成了「梦想杀手」。ENFP会听你的，但心里会留下遗憾和不甘。" },
+          { label: "C", text: "「你每次都这样，想起来一出是一出。」", correct: false,
+            feedback: "模式化否定让ENFP觉得自己在你眼里永远不会成长。" },
+          { label: "D", text: "「去吧！我支持你！辞职也没关系！」", correct: false,
+            feedback: "不加思考的支持会让ENFP觉得你不关心Ta的实际处境。Ta需要的是伙伴，不是啦啦队。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：Ta在深度关系里感到窒息",
+        scene: "你们最近见面很频繁，ENFP开始有点反常——回消息变慢了，约会的热情也不像之前那么高了。你问Ta，Ta犹豫了一下说：「我最近有点喘不过气……不是你的问题，我就是需要一点空间。」",
+        question: "你怎么做？",
+        options: [
+          { label: "A", text: "「谢谢你告诉我。你需要多少空间我都给——但我想让你知道，你不是一个人在喘。我在这里，不远不近，随叫随到。」然后真的给Ta呼吸的距离。", correct: true,
+            feedback: "你展现了教科书级别的安全感。ENFP的「窒息感」很快会变成「想念感」，Ta会主动回来的。" },
+          { label: "B", text: "「你是不是不想跟我在一起了？直接说。」", correct: false,
+            feedback: "把Ta的需求解读为拒绝，等于逼Ta在「自由」和「关系」之间二选一。结果往往不是你想要的。" },
+          { label: "C", text: "嘴上说「好的」，但一天发三十条消息确认Ta还爱你。", correct: false,
+            feedback: "言行不一比干脆不放人更让ENFP窒息。Ta会觉得「你不相信我说的话」。合理" },
+          { label: "D", text: "「那我们先冷静一段时间吧。」然后消失。", correct: false,
+            feedback: "ENFP说的是「空间」不是「分手」。冷暴力会让Ta确定「果然关系=束缚」，然后真的离开。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta的创意被你「务实」地评价了",
+        scene: "ENFP兴冲冲地给你看一个创业计划——做一家「情绪博物馆」，让人们体验不同情绪的房间。虽然很有创意，但你一看就觉得商业模式不靠谱。你刚说完「这怎么赚钱啊」，Ta的表情就垮了。",
+        question: "现在你怎么补救？",
+        options: [
+          { label: "A", text: "「等等，我太着急了。你先跟我多说说这个想法——情绪博物馆这个概念真的很特别，我是被吸引的。我们先把创意聊透了，再一起想怎么落地好不好？」", correct: true,
+            feedback: "你承认了自己的问题，把刹车变成了方向盘。ENFP会破涕为笑：「好，我们继续聊！」" },
+          { label: "B", text: "「我只是实事求是，你要是连意见都听不进去我也没办法。」", correct: false,
+            feedback: "坚持己见只会让Ta觉得你不愿意进入Ta的世界。ENFP不是听不进意见，是需要先被看见。" },
+          { label: "C", text: "「算了当我没说，你继续。」", correct: false,
+            feedback: "撤回不等于修复。ENFP知道你已经否定了，你只是不想再谈了。" },
+          { label: "D", text: "转移话题：「你饿不饿？我们去吃饭吧。」", correct: false,
+            feedback: "回避=冷处理。ENFP会把这次伤害存起来，下次分享前先犹豫三秒。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：你忽略了Ta的「情感暗示」",
+        scene: "ENFP这周发了三条暗示性的朋友圈——「有时候努力逗别人开心是最累的事」、「如果能被看穿一次就好了」、「🌧️」。你没有评论或私聊。今天见面时，Ta明显不太高兴。",
+        question: "你会怎么做？",
+        options: [
+          { label: "A", text: "直接轻声问：「我看到你这周发的动态了。是不是有不开心的事？我当时没问是怕打扰你，但我想现在听你说。」", correct: true,
+            feedback: "你注意到了！而且你解释了为什么不当时问。ENFP的委屈瞬间消了一半——Ta不怪你没及时回应，但感激你看到并关心。" },
+          { label: "B", text: "「你怎么又不高兴了？我哪里做错了？」", correct: false,
+            feedback: "防御性反问会让ENFP觉得「说了也没有用，还得反过来安慰你」。" },
+          { label: "C", text: "「你发朋友圈不就是为了让我看吗？直接说不就行了。」", correct: false,
+            feedback: "ENFP用暗示不是因为作，是因为害怕直接说会被拒绝或敷衍。你的反应刚好证实了Ta的恐惧。" },
+          { label: "D", text: "假装没看到那些朋友圈，聊别的。", correct: false,
+            feedback: "ENFP会觉得「你真的不在乎我」，然后开始怀疑这段关系的深度。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「我是不是太不靠谱了」",
+        scene: "深夜，ENFP躺在你身边，难得安静了很久，然后小声问：「你觉得……我是不是太不靠谱了？我换了那么多工作，喜欢过那么多人，做过那么多半途而废的事。我怕有一天你也会觉得我只是一时兴起。」",
+        question: "你的回答是？（这是最重要的时刻）",
+        options: [
+          { label: "A", text: "「你不是不靠谱，你是一个在探索世界的人。你做的每件事——就算没做完——都让你更懂自己想要什么。而我选择的是你这个人，不是你做的事。你的好奇心、你的热情、你眼睛里永远不灭的光——这些才是你。我不怕你改变，我怕你不再改变。」", correct: true,
+            feedback: "ENFP听完会沉默三秒，然后眼泪掉下来紧紧抱住你。Ta一生都在等一个人告诉Ta「你的不稳定不是错，是你的超能力」。你做到了。" },
+          { label: "B", text: "「你确实不稳定，但我觉得你可以慢慢变好的。」", correct: false,
+            feedback: "「变好」这两个字等于承认Ta现在「不够好」。ENFP要的不是改造方案，是接纳。" },
+          { label: "C", text: "「傻瓜，我怎么会觉得你不靠谱呢？」（但没有下文）", correct: false,
+            feedback: "太短了。Ta在问你一个核心的自我怀疑，你只给了三个字的安慰。ENFP会觉得你没认真想。" },
+          { label: "D", text: "「你别想那么多啦，睡觉吧。」", correct: false,
+            feedback: "这是ENFP最脆弱的一次自我暴露，你用一个「别想太多」轻轻带过。Ta会后悔问了这个问题。" }
+        ]
+      }
     ]
   },
+
+  // ==================== INFJ ====================
   {
-    id: 3,
-    title: "第3关：你忘记了重要纪念日",
-    scene: "今天是你们恋爱100天的日子，但你因为工作太忙完全忘记了。晚上见面时，你发现INFP精心准备了晚餐和小礼物。你看到Ta期待的眼神，突然意识到今天是什么日子……",
-    question: "你的反应是？",
-    options: [
-      { label: "A", text: "立刻放下东西，拥抱Ta，真诚地说：「天哪我真的忘了，对不起！这几天压力太大了脑子都是乱的。你太用心了，我好感动。」", correct: true,
-        feedback: "真诚的道歉+情感表达，INFP最吃这一套。" },
-      { label: "B", text: "抱歉我忘了，别生气嘛，周末带你去吃大餐补上。", correct: false,
-        feedback: "「补偿式」回应让INFP觉得你在走形式，没有真心。" },
-      { label: "C", text: "100天有什么好过的呀，重要的日子还多着呢。", correct: false,
-        feedback: "Ta觉得你根本不重视这段感情。" },
-      { label: "D", text: "赶紧点开外卖App：「我现在就给你订束花！」", correct: false,
-        feedback: "临时补救显得刻意，INFP看重的是真心而非物质。" }
+    id: 'infj',
+    category: 'mbti',
+    name: 'INFJ',
+    fullName: '提倡者',
+    emoji: '🌙',
+    theme: { primary: '#4a6fa5', accent: '#7eb8da', gold: '#c9a96e' },
+    description: '深邃的理想主义者，拥有惊人的直觉，追求灵魂层面的共鸣',
+    tags: ['深邃', '直觉', '理想主义'],
+    winQuotes: [
+      '「我终于遇到了一个愿意潜入深海的人。大部分人在岸边挥挥手就走了——你游下来找我了。」'
+    ],
+    loseMsg: 'INFJ的心像深海——表面平静，底下暗流涌动。用心感受，你会看到不一样的风景。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：初次相遇",
+        scene: "聚会上，INFJ坐在角落安静地观察着每个人。你注意到了Ta，决定主动搭话。Ta抬头看你，眼神平静但带着一丝审视。",
+        question: "你说什么？",
+        options: [
+          { label: "A", text: "「我注意到你在观察每个人，你在想什么？」", correct: true,
+            feedback: "你精准地捕捉到了INFJ的特质——Ta喜欢观察但不喜欢被定义。这句话表明你看到了Ta，但没有评判Ta。INFJ微微笑了一下。" },
+          { label: "B", text: "「你好像不太融入，要不要换个地方聊聊？」", correct: false,
+            feedback: "INFJ不是'不融入'，是选择性地观察。你替Ta做了判断——这是INFJ最反感的。Ta礼貌地婉拒了。" },
+          { label: "C", text: "「我也喜欢安静，这种场合确实挺累的。」", correct: false,
+            feedback: "你把INFJ归类为'内向'，但INFJ不喜欢被贴标签。虽然你说的可能是对的，但用共性来套近乎对INFJ来说太浅了。" },
+          { label: "D", text: "「你话不多但感觉挺有想法的，我猜对没？」", correct: false,
+            feedback: "方向对了，但太泛。INFJ会觉得你看到了表面但没有真正触及什么。Ta礼貌地回应了，但没有打开话匣子。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta发来一段长文字",
+        scene: "INFJ深夜给你发了一段很长的文字，是对某个社会现象的深度思考——写了大概500字，逻辑缜密，但字里行间藏着情绪。你读完了全部。",
+        question: "你怎么回复？",
+        options: [
+          { label: "A", text: "「你写的我全看了，中间那段让我想了很久。」", correct: true,
+            feedback: "你没有笼统地夸Ta'有思想'，而是告诉Ta你认真看了，并且指出了具体打动你的部分。INFJ最需要的不是赞美，是'被认真对待'。" },
+          { label: "B", text: "「你好有思想，能写出这些真的很厉害。」", correct: false,
+            feedback: "你夸的是Ta的'人设'而不是Ta的'内容'。INFJ分得出崇拜和理解的区别——前者让Ta觉得孤独，后者让Ta觉得被看见。" },
+          { label: "C", text: "「我对这个话题了解不多，但你说的很吸引我。」", correct: false,
+            feedback: "坦诚是好的，但你没有跟Ta进行任何实质性的对话。INFJ花时间写了500字，期待的不是'你说得对'，而是一个思想上的回应。" },
+          { label: "D", text: "「我们改天约个时间面对面聊这个吧。」", correct: false,
+            feedback: "听起来很体贴，但实际上你在回避当下的文字交流。INFJ选择用文字表达是有原因的——文字让Ta能更精准地表达。你的'改天'等于忽略了Ta此刻的分享欲。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：你坦白了自己的过去",
+        scene: "一个安静的晚上，你跟INFJ坦白了一件自己一直后悔的事。说完后你有些紧张——不知道Ta会怎么看你。INFJ安静地听完了全部，没有打断。",
+        question: "听完后，你觉得INFJ最可能会说什么？",
+        options: [
+          { label: "A", text: "「谢谢。你觉得现在的你，和那时有什么不同？」", correct: true,
+            feedback: "INFJ不评判过去，但关心成长。Ta没有说'没关系'（那是敷衍），也没有说'你好勇敢'（那是客套），而是把话题引向了你的自我认知——这是最高级的共情。" },
+          { label: "B", text: "「谁没有犯过错呢，你别太自责了。」", correct: false,
+            feedback: "这是很多人会说的'标准安慰'，但INFJ不会。因为这句话实际上在说'你的感受不重要，大家都这样'。INFJ知道你需要的是被看见，而不是被归类。" },
+          { label: "C", text: "「我有点意外，不过还是谢谢你信任我。」", correct: false,
+            feedback: "诚实但略显疏离。INFJ不会让'自己的意外'成为回应的焦点——Ta会把注意力重新放回你身上，而不是表达自己有多惊讶。" },
+          { label: "D", text: "「能说出来说明你已经走出来了，挺好的。」", correct: false,
+            feedback: "你在替Ta做结论。INFJ不会假定你已经'走出来'——Ta知道说出口不等于释怀，所以不会急着给你的情绪画句号。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta开始给你提建议",
+        scene: "交往一段时间后，你发现INFJ经常给你各种建议——从工作方法到生活习惯，虽然都是好意，但你开始感到有点压力。你不想伤害Ta，但也不想一直被'指导'。",
+        question: "你怎么跟Ta沟通？",
+        options: [
+          { label: "A", text: "「我很感激你的建议，但有时候我会觉得有压力。」", correct: true,
+            feedback: "你同时表达了感谢和边界。INFJ会因为你没有否定Ta的用心而感到安全，同时也会因为你的坦诚而调整自己的方式。这是INFJ最欣赏的沟通模式。" },
+          { label: "B", text: "「你管得太多了，能不能让我做自己？」", correct: false,
+            feedback: "直接反击会让INFJ瞬间关闭。Ta的建议是Ta表达关心的方式——否定方式等于否定关心。INFJ会退后很多步，甚至开始怀疑自己是不是'控制欲太强'。" },
+          { label: "C", text: "「好的我知道了」然后什么也不改。", correct: false,
+            feedback: "INFJ最怕的就是敷衍。Ta会敏锐地察觉到你并没有真的接受，但你没有给Ta对话的机会。这种沉默的抵抗比直接吵架更让INFJ不安。" },
+          { label: "D", text: "「我们可以聊聊你的建议方式吗？我想更舒服地接受。」", correct: false,
+            feedback: "方向对，但语气太正式了，像在开工作会议。INFJ会认真对待，但心里会觉得——我们之间需要这么官方吗？" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：Ta突然变得冷淡",
+        scene: "INFJ已经两天没怎么回你消息了。回复很简短——「嗯」「好的」「在忙」。你不知道发生了什么，心里有些慌，但又不想表现得太焦虑。",
+        question: "你怎么做？",
+        options: [
+          { label: "A", text: "「你需要空间，我不打扰。想找我的时候我都在。」", correct: true,
+            feedback: "你给了INFJ最需要的东西——不施加压力的空间。而且你没有说'你是不是生气了'（那会让Ta觉得需要解释），只是平静地表达了'门开着'。INFJ会感激这种克制。" },
+          { label: "B", text: "「你还好吗？如果不舒服可以跟我说。」", correct: false,
+            feedback: "听起来很体贴，但对此刻的INFJ来说，追问本身就是一种压力。Ta不知道该怎么回答——说'没事'是撒谎，说真话又需要消耗大量能量。" },
+          { label: "C", text: "「那我也不找你了，你自己调整吧。」", correct: false,
+            feedback: "语气太像赌气了。INFJ会听到潜台词——'你冷落我，我也冷落你'。这会让Ta觉得自己的独处需求被曲解成了攻击，反而更不想沟通。" },
+          { label: "D", text: "「我担心你，不过我会等你主动开口。」", correct: false,
+            feedback: "表达了关心，但'等你主动开口'仍然是一种隐性的期待。INFJ会感受到——你表面给了空间，但心里在计时。这种微妙的压力Ta完全能感觉到。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：你遇到人生挫折",
+        scene: "你被裁员了，很沮丧。你跟INFJ说了这件事，语气里带着无力感。INFJ安静地听着，没有立刻给你解决方案，也没有说'一切都会好的'。",
+        question: "你希望INFJ怎么回应你？",
+        options: [
+          { label: "A", text: "「这很难受。你现在最需要什么？我听着。」", correct: true,
+            feedback: "INFJ没有跳过你的情绪直接解决问题，也没有用空洞的安慰敷衍你。Ta先确认了你的情绪，然后把主动权交还给你——告诉你Ta在，但不替你决定你需要什么。这是INFJ最深的温柔。" },
+          { label: "B", text: "「别担心，我陪着你一起想办法。」", correct: false,
+            feedback: "听起来很暖，但它跳过了最重要的步骤——先处理情绪。INFJ不会急着'解决问题'，因为Ta知道此刻你需要的不是方案，是有人陪你坐在废墟里。" },
+          { label: "C", text: "「我经历过类似的，你要听听我的故事吗？」", correct: false,
+            feedback: "你转移了焦点。INFJ不会在你脆弱的时候把话题拉到自己身上——即使出发点是'用我的经历安慰你'，Ta也知道此刻的主角应该是你。" },
+          { label: "D", text: "「工作而已，你的价值不止于此。」", correct: false,
+            feedback: "道理是对的，但缺了共情的温度。INFJ不会用道理来覆盖情绪——Ta知道你说的是事实，但此刻你需要的是情绪被接住，而不是被纠正。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：见家长后Ta不开心",
+        scene: "你带INFJ见了父母。整个过程还算顺利，但你注意到INFJ回家后很安静，笑容也比平时少了很多。你感觉Ta不太开心，但Ta没有主动说。",
+        question: "你怎么办？",
+        options: [
+          { label: "A", text: "「今晚让你不舒服了，是我想得不够周到。」", correct: true,
+            feedback: "你主动承担了责任，没有把问题推给Ta或你父母。INFJ松了一口气——Ta不需要你完美，但需要你知道Ta不开心，而且你愿意为此负责。这比任何解释都管用。" },
+          { label: "B", text: "「我爸妈就是那样的性格，你别往心里去。」", correct: false,
+            feedback: "你在合理化而非共情。INFJ不需要你替你父母解释——Ta需要的是你承认Ta的感受是真实的。这句话让Ta觉得你的立场在父母那边。" },
+          { label: "C", text: "「来跟我说说，你刚刚哪个瞬间最不自在？」", correct: false,
+            feedback: "追问的意图是好的，但此刻INFJ已经很累了。让Ta回顾每一个不舒服的瞬间可能让Ta更疲惫。有时候先安抚情绪比立即分析问题更重要。" },
+          { label: "D", text: "先让Ta自己安静一会儿，什么也不说。", correct: false,
+            feedback: "过于被动。INFJ此刻需要的是你主动的信号——哪怕只是一句话。完全沉默会让Ta觉得你不在乎或者你没注意到Ta的不开心。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：Ta分享宏大理想",
+        scene: "INFJ突然跟你说，Ta想辞职去非洲做一年志愿者。这不是一时兴起的玩笑——Ta说这件事的时候，眼睛里有一种你很少见到的光。",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「很有挑战。你要是真想去做，我支持你。」", correct: true,
+            feedback: "你没有狂热地赞美（那是浮夸），也没有立刻泼冷水（那是打击）。你用平静但坚定的方式表达了支持——这让INFJ觉得有人把Ta的理想当真了，而不是当成一个'美好的幻想'。" },
+          { label: "B", text: "「好伟大的理想！你一定可以的。」", correct: false,
+            feedback: "泛泛的鼓励在INFJ听来像敷衍。Ta花了那么多时间思考这件事，值得一个更认真的回应。过于热情的赞美反而让Ta怀疑——你真的听进去了吗？" },
+          { label: "C", text: "「那会很苦吧，你确定想清楚了吗？」", correct: false,
+            feedback: "第一反应是质疑。即使你的担忧是合理的，但顺序错了——INFJ需要先听到'我听到了你的梦想'，然后才是'我们怎么让它落地'。先质疑等于先打击。" },
+          { label: "D", text: "「如果你想做，我们可以一起规划一下。」", correct: false,
+            feedback: "方向是对的——支持加行动。但跳过了最关键的一步：先共情。INFJ此刻需要的不是'规划'，而是'我听到了，我觉得这个梦想值得存在'。先共情，再规划。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：Ta在社交后卸下面具",
+        scene: "你们一起参加了朋友聚会，INFJ全程开朗健谈、照顾每个人的情绪，是全场最温暖的人。但回到家后，Ta立刻瘫在沙发上，整个人像被抽空了一样。",
+        question: "你怎么做？",
+        options: [
+          { label: "A", text: "「累了吧，不用说话，休息一下就好。」", correct: true,
+            feedback: "你看到了INFJ社交后的真实状态，并且没有大惊小怪。你给了Ta从'社交模式'切换到'休息模式'的许可，没有任何附加条件。这让INFJ觉得——跟你在一起，Ta不需要表演。" },
+          { label: "B", text: "「你刚刚明明很开心，怎么现在这样？」", correct: false,
+            feedback: "你在质疑Ta的情绪真实性。INFJ的社交能力不等于社交享受——Ta可以表现得很开心同时内心很疲惫。你的话让Ta觉得自己连疲惫都要被审视。" },
+          { label: "C", text: "「我也挺累的，今天人真的太多了。」", correct: false,
+            feedback: "你在谈论自己，而不是关注Ta。INFJ刚刚花了几个小时关注所有人，此刻需要有人把注意力放回Ta身上。你把话题拉回自己，会让Ta更孤独。" },
+          { label: "D", text: "「想不想聊聊刚才哪个人让你最有印象？」", correct: false,
+            feedback: "在Ta累的时候追问社交内容，等于让Ta继续'社交模式'。INFJ此刻需要的不是回顾社交，而是彻底放空。你的问题虽然出于好意，但时机完全错了。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta说「我可能不适合恋爱」",
+        scene: "最近INFJ变得有些退缩，约会时常常走神。今天Ta突然跟你说：「有时候我觉得……我可能不适合谈恋爱。我想得太多，需要太多独处的时间，对别人来说太累了。」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「你的不安我听到了。但适不适合，该由我判断。」", correct: true,
+            feedback: "你没有急着否定Ta的感受（'你怎么会这么想'），也没有被动地放手（'如果你需要时间'）。你接住了情绪，但温柔地把判断权拿回了自己手里。INFJ会因为你没有逃跑而深深记住这一刻。" },
+          { label: "B", text: "「你怎么会这么想？我觉得你很好啊。」", correct: false,
+            feedback: "你在否定Ta的感受。INFJ不是在撒娇，Ta是认真地怀疑自己。'我觉得你很好'不能消解这份怀疑——Ta需要的是被认真对待，而不是被随口反驳。" },
+          { label: "C", text: "「如果你需要时间思考，我尊重你。」", correct: false,
+            feedback: "太被动了。INFJ说这句话的时候，其实在试探——你会不会跑。你的'尊重'在Ta听来可能像'那好吧，你慢慢想，我不打扰了'。尊重边界是对的，但此刻Ta更需要你往前走一步。" },
+          { label: "D", text: "「我们都冷静一下，下次再聊这个吧。」", correct: false,
+            feedback: "回避深层沟通等于证实了Ta的恐惧——'看吧，我果然太难搞了'。INFJ说这句话已经鼓足了勇气，你的回避会让Ta决定以后不再说真心话。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：你说Ta「想太多」",
+        scene: "INFJ又在反复琢磨一件小事——Ta花了很多时间分析一个朋友的无心之言。你随口笑着说了一句：「你想太多了吧，简单点不行吗？」Ta的表情瞬间僵住了。",
+        question: "你意识到说错话了，怎么办？",
+        options: [
+          { label: "A", text: "「那句话不对。想太多是你的能力，我不该说。」", correct: true,
+            feedback: "你精准地道歉了——没有说'我是开玩笑的'（这是推卸），也没有说'你是不是生气了'（这是让Ta来教你道歉）。你承认了错误，并且肯定了Ta的特质。INFJ的僵硬表情松动了。" },
+          { label: "B", text: "「我开玩笑的，你知道我没有恶意吧？」", correct: false,
+            feedback: "用'开玩笑'来推卸责任是最糟糕的道歉方式之一。INFJ不会因为你说'没有恶意'就觉得没被伤害。Ta听到的是——'你的感受不重要，我的意图才重要'。" },
+          { label: "C", text: "「你是不是生气了？我哪里说错了你告诉我。」", correct: false,
+            feedback: "你在让Ta来教你道歉。此刻INFJ已经被刺痛了，你还要Ta帮你分析你错在哪——这相当于在Ta的伤口上加了一层'教学负担'。" },
+          { label: "D", text: "「我以后不这样说了，你别不开心。」", correct: false,
+            feedback: "道歉了，但不走心。'你别不开心'听起来像是在让Ta管理自己的情绪来让你舒服。INFJ会接受你的道歉，但心里知道——你没有真的理解为什么那句话伤人。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「我们合适吗」",
+        scene: "深夜，INFJ靠在你身边，安静了很久。然后Ta轻声问了一个藏在心底很久的问题：「你觉得……我们真的合适吗？」你感觉这不是随口一问——Ta在等你给这段关系一个定义。",
+        question: "（终极考验）你怎么回答？",
+        options: [
+          { label: "A", text: "「合适不是一个状态，而是一个选择。我选你。」", correct: true,
+            feedback: "你说出了INFJ最想听到的东西——不是'我们天生一对'（那太假），不是'时间会证明'（那太虚），而是'我清醒地选择了你'。深度和承诺，你同时给了。INFJ会安静地把头靠在你肩上——这是Ta最高级别的认可。" },
+          { label: "B", text: "「我们现在不就在一起了吗？合适很重要吗？」", correct: false,
+            feedback: "你在回避问题。INFJ问的不是'在不在'，是'为什么在'。回避定义的人，在INFJ看来是不愿意深入思考关系的人——而这恰恰是INFJ最不能接受的。" },
+          { label: "C", text: "「合不合适要靠时间来验证，现在说还太早。」", correct: false,
+            feedback: "理性，但缺少温度。INFJ此刻需要的不是客观分析——Ta要的是一个态度。你把一个情感问题回答得像在谈项目进度，INFJ会觉得自己问这个问题很蠢。" },
+          { label: "D", text: "「我觉得我们挺合适的，你觉得呢？」", correct: false,
+            feedback: "把问题抛回给INFJ，等于在说——我不想为这个答案负责。Ta问的是你的想法，不是你的反问。这个回答会让INFJ觉得你根本就没有认真想过这个问题。" }
+        ]
+      }
     ]
   },
+
+  // ==================== INTJ ====================
   {
-    id: 4,
-    title: "第4关：你们发生了第一次争执",
-    scene: "你们讨论一个社会话题时，观点完全相反。INFP越说越激动，最后眼眶红了，说了一句：「你根本不懂我在说什么。」然后沉默了。",
-    question: "你会怎么做？",
-    options: [
-      { label: "A", text: "深吸一口气，放软语气：「可能我刚才没表达好。你能再跟我说一遍你的想法吗？我想认真听。」", correct: true,
-        feedback: "你放下了输赢，选择了理解。INFP的眼泪变成了笑容。" },
-      { label: "B", text: "继续摆事实讲道理，试图说服Ta。", correct: false,
-        feedback: "INFP觉得你在「碾压」Ta，而不是在交流。" },
-      { label: "C", text: "好吧好吧你说的都对，我们不吵了。", correct: false,
-        feedback: "敷衍式妥协比吵架更伤人，INFP会觉得「你根本不想和我沟通」。" },
-      { label: "D", text: "直接走开，让彼此冷静一下。", correct: false,
-        feedback: "冷处理=冷漠，INFP会在你离开的时间里脑补一万种分手的理由。" }
+    id: 'intj',
+    category: 'mbti',
+    name: 'INTJ',
+    fullName: '建筑师',
+    emoji: '🦉',
+    theme: { primary: '#3d5a80', accent: '#98c1d9', gold: '#b8a07a' },
+    description: '理性而独立的战略家，追求效率和真理，内心有一个宏大的蓝图',
+    tags: ['理性', '独立', '战略'],
+    winQuotes: [
+      '「我花了很长时间计算，发现数据支持一个结论——我应该让你进入我的长期规划。这不是感情用事，这是经过充分验证的最优解。」'
+    ],
+    loseMsg: 'INTJ的心像一个加固的堡垒。攻不进去？别急——Ta需要的不是攻城锤，是一张通行证。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：初次约会",
+        scene: "你和INTJ第一次约会。Ta选了场景——一个人少的科技馆。你们站在一个量子力学的互动展台前，INTJ开始跟你解释量子纠缠的原理。Ta讲得很认真，但你在想：约会的正确打开方式是这样的吗？",
+        question: "你的回应是？",
+        options: [
+          { label: "A", text: "认真听完，然后说：「有意思。所以你的意思是——两个纠缠的粒子不管距离多远都能瞬间影响对方？那这个理论如果要应用到日常决策中，你觉得最接近的例子是什么？」", correct: true,
+            feedback: "INTJ微微睁大了眼睛——这是Ta表示「惊喜」的表情。你不但听懂了，还抛回了一个有深度的追问。这种智力共鸣对INTJ来说，比任何情话都性感。" },
+          { label: "B", text: "「你好聪明啊！我好崇拜你。」", correct: false,
+            feedback: "空洞的崇拜对INTJ没有任何吸引力。Ta不需要粉丝，需要的是能跟Ta在智力上交锋的对手和平等的伙伴。" },
+          { label: "C", text: "「我们能不能聊点约会该聊的话题？比如兴趣爱好什么的。」", correct: false,
+            feedback: "这已经是INTJ认为最有趣的「兴趣」了。你等于在说「你有趣的东西我不感兴趣」——这对INTJ是终极diss。" },
+          { label: "D", text: "假装听懂，点头微笑但不提问。", correct: false,
+            feedback: "INTJ能精准识别假装的兴趣。Ta会在心里给你贴上「不真诚」的标签，并默默取消了第二次约会的计划。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta沉浸在工作中不理你",
+        scene: "INTJ正在做一个重要的项目，已经连续三天沉浸在「深度工作」模式中。消息回得很慢，电话也不接。你发了一句「在干嘛呢？」，两小时后收到两个字：「工作。」",
+        question: "你怎么处理？",
+        options: [
+          { label: "A", text: "「好的，你忙完告诉我一声。需要我带饭或者帮忙做什么吗？」然后真的不打扰。", correct: true,
+            feedback: "你展现了对INTJ独立性的尊重。Ta不会说出来——但效率因此更高了，因为不需要分心处理「你为什么不理我」的焦虑。" },
+          { label: "B", text: "「三天了诶，工作比我重要吗？」", correct: false,
+            feedback: "用情绪化的方式提需求=INTJ的黑名单前兆。Ta不是不在乎你，是此刻在运转另一个模式。矫情会让INTJ觉得「这段关系效率太低」。" },
+          { label: "C", text: "「你至少回个电话吧，我有事跟你说。」（其实没啥大事）", correct: false,
+            feedback: "INTJ讨厌被操控。如果发现你「有事」只是借口，信任度会大幅下降。" },
+          { label: "D", text: "直接去Ta公司/家找Ta。", correct: false,
+            feedback: "打断INTJ的深度工作=触犯了Ta最大的禁区之一。Ta会用冰冷的眼神告诉你——这种做法不会再有第二次。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：Ta直白地指出了你的问题",
+        scene: "你们在讨论你的一个决定——你因为不好意思拒绝帮朋友做了一件事，结果搞砸了自己的计划。INTJ听完冷静地说：「你的决策逻辑有问题。你为了短期的社交舒适牺牲了长期效率。这不是善良，是缺乏边界感。」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「你说得有道理……虽然有点扎心。我确实在边界感上有盲点，以后遇到类似情况你帮我分析一下？我不是让你替我决定，是帮我梳理逻辑。」", correct: true,
+            feedback: "你接受了批判（不带情绪），并提出了建设性的合作方案。INTJ在心里给你加了大分——这是Ta理想中的沟通方式。" },
+          { label: "B", text: "「你说话能不能温柔一点？我只是帮个朋友。」", correct: false,
+            feedback: "在INTJ看来，问题在于决策质量而非表达方式。你只关注语气=回避了核心问题。Ta会觉得跟你讨论严肃话题没有意义。" },
+          { label: "C", text: "「你懂什么？你根本不知道当时的情况。」", correct: false,
+            feedback: "防御性反弹让INTJ确认——你不是一个能接受反馈的人。Ta从此会减少对你的真诚反馈，而这恰恰是INTJ表达在乎的方式。" },
+          { label: "D", text: "沉默受伤，心里难过但不说。", correct: false,
+            feedback: "INTJ无法读你的心。你不说=没问题——但问题其实在堆积。等某天爆发时，INTJ只会觉得「你怎么突然就炸了，毫无逻辑」。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：你想给Ta「惊喜」",
+        scene: "你精心策划了一个惊喜——周末带INTJ去一个「浪漫的温泉度假」。你没有提前告诉Ta，想给Ta一个surprise。拿着行李箱出现在Ta面前时，INTJ的表情不是惊喜，而是皱眉：「这个周末我已经安排了深度阅读和健身房。你有没有先问过我？」",
+        question: "现在你怎么办？",
+        options: [
+          { label: "A", text: "「你说得对，我应该提前问你。惊喜这个方式不适合你——以后我会跟你一起计划。不过既然我都订好了……你能把阅读和健身移到下一周吗？如果不能，我跟朋友去也没关系。」", correct: true,
+            feedback: "你承认了逻辑错误（INTJ欣赏），给了选择（INTJ需要掌控感），并且提供了备选方案（表明你不会因此情绪爆炸）。这可能是最让INTJ舒适的一个「惊喜失败」处理。" },
+          { label: "B", text: "「我好心给你惊喜诶！你就不能赏脸开心一下吗？」", correct: false,
+            feedback: "你用自己的标准定义「好心的浪漫」，并要求INTJ配合。Ta会觉得你完全不理解也不想理解Ta——亲密关系里最致命的就是这个。" },
+          { label: "C", text: "失望地把行李箱放下：「好吧，那我不去了。」", correct: false,
+            feedback: "被动攻击对INTJ毫无效果——INTJ不会安抚「自找的失望」。Ta只会想「这就是不计划的代价」并继续执行既定安排。" },
+          { label: "D", text: "「那我把你的安排也考虑进去了，温泉旁边有健身房，你在房间里也能看书。」", correct: false,
+            feedback: "你没有真正承认错误，而是在狡辩。INTJ一眼就能看穿这种逻辑漏洞——这让Ta更恼火。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：Ta的情感表达让你困惑",
+        scene: "你最近工作上遇到了很大的挫折，需要安慰。INTJ听完你的倾诉后，没有拥抱你，而是冷静地列出了三条解决方案和一个时间表：「第一，明天跟老板谈——第二，更新你的简历——第三，这个行业里我有两个熟人可以帮你问。」你心里想的是——就不能抱我一下吗？",
+        question: "你怎么跟Ta沟通你的需要？",
+        options: [
+          { label: "A", text: "「你给出的方案很有用——真的很谢谢你。但我也需要你抱我一下。我知道解决问题比表达情感更适合你——但此刻，我需要的是你，不是方案。」", correct: true,
+            feedback: "你肯定了Ta的贡献（INTJ很需要这个），也清晰地表达了情感需求。INTJ会认真记住——然后给你一个虽然有点僵硬但诚意满满的拥抱。" },
+          { label: "B", text: "「你一点都不在乎我的感受，只会分析。」", correct: false,
+            feedback: "你完全否定了Ta关心你的方式。INTJ心里——「解决方案=最高级别的关心」。否定这个=否定Ta付出的努力=非常不公平。" },
+          { label: "C", text: "不说话，期望Ta自己意识到你需要拥抱。", correct: false,
+            feedback: "对INTJ使用「读心术期望」是最低效策略。Ta不是不愿意抱你，是没接收到指令。INTJ不是冷漠，是情感表达的方式不同。" },
+          { label: "D", text: "「算了，我去找朋友聊。」", correct: false,
+            feedback: "放弃沟通+寻找替代品=你在告诉INTJ「你给的不是我要的，我懒得教你」。这是对INTJ付出的全面否定。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：你做了非常「不理智」的决定",
+        scene: "你告诉INTJ你做了一个决定——在完全没有准备的情况下，冲动消费买了一个很贵的东西（比如一辆摩托车/一个奢侈包/一台高端设备）。INTJ沉默了，然后说：「你有没有计算过这个决定的长期影响？利息、折旧、使用率……你做这个决定用了多少秒？」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「哈哈，大概用了三秒钟。我知道这在你看来很疯狂——但人生有时候也需要一点冲动。我钱包撑得住，不会影响我们的计划。而且我承认——这种感觉挺爽的。你这个规划大师偶尔也允许我疯一次？」", correct: true,
+            feedback: "你坦白了「三秒钟」，幽默地承认了冲动，但给出了「不影响大局」的边界。INTJ虽然不太认同，但会选择尊重你的决定——因为你在逻辑框架内让Ta安心了。" },
+          { label: "B", text: "「这是我的钱，我想怎么花就怎么花。」", correct: false,
+            feedback: "对抗性回应切断了对话。INTJ感受到的是「你不配过问我的事」——这对看重共同规划的INTJ来说，是致命的态度。" },
+          { label: "C", text: "「你不懂，这是我一直想要的。」", correct: false,
+            feedback: "情绪化的理由在INTJ的逻辑框架中不成立。你不是在沟通，是在宣告。这会让INTJ觉得你说不通。" },
+          { label: "D", text: "被问到心虚，开始找各种理由掩饰。", correct: false,
+            feedback: "INTJ能精准识别逻辑漏洞。你的掩饰只会让Ta更深入地拆解你的每一个错误推理。结果比直接承认冲动更糟糕。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：社交场合的尴尬",
+        scene: "你带INTJ参加一个大型社交聚会。Ta选了一个角落站着，手里拿着一杯饮料，全程没说超过十句话。有人试图跟Ta搭讪——「你是做什么工作的？」INTJ回答了一句后，对方尴尬地走开了。回家路上，Ta问你：「你介意我今天没跟人聊天吗？」",
+        question: "你的回答是？",
+        options: [
+          { label: "A", text: "「不介意。你不需要成为任何人的焦点。你能来已经是我最感激的事了——我知道这种场合对你来说很消耗能量。」", correct: true,
+            feedback: "INTJ心里松了一口气。Ta不怕社交，怕的是你期望Ta成为另一种人。你的理解和感激让Ta觉得——下次还会愿意陪你来。" },
+          { label: "B", text: "「你以后能不能对别人友善一点？你那样会让人觉得你很高冷。」", correct: false,
+            feedback: "你在用外部标准评判INTJ的本性——而INTJ最不屑的就是外部标准。你的话会让Ta决定「下次我不去了」。" },
+          { label: "C", text: "「还行吧，不过下次你能不能稍微多说两句？我有点尴尬。」", correct: false,
+            feedback: "你在意的不是Ta的感受，是你的面子。INTJ会判断——你在乎他人的看法胜过在乎Ta的舒适。" },
+          { label: "D", text: "嘴上说没关系，但一路沉默。", correct: false,
+            feedback: "INTJ不需要读你的心——沉默本身就传递了不满。这比直接说出来更让Ta困扰，因为Ta不知道具体要解决什么问题。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：Ta把自己逼得太紧了",
+        scene: "INTJ给自己定了一个非常激进的目标——三个月内完成一个通常需要半年的项目。Ta每天只睡四五个小时，瘦了一圈，脸色很差。你说「休息一下吧」，Ta回答：「休息不能帮我完成目标。」",
+        question: "你怎么说服Ta？",
+        options: [
+          { label: "A", text: "「用数据说话：你目前的效率因为睡眠不足已经下降了至少30%。按照这个趋势，三个月后目标不但完不成，你可能还会因为健康问题需要更长的时间恢复。休息不是放弃，是效率优化。」", correct: true,
+            feedback: "你用INTJ的语言（数据、效率、优化）跟INTJ沟通——这恰恰是Ta能听进去的方式。Ta会认真考虑你的论据，因为这符合Ta的逻辑框架。" },
+          { label: "B", text: "「你这样会生病的！难道身体不重要吗？」", correct: false,
+            feedback: "情绪化的警告对INTJ无效——因为短期来看，Ta确实在用身体换进度。你需要用Ta的逻辑说服Ta，而不是用情绪。" },
+          { label: "C", text: "把电脑关掉/把Ta拉出房间。", correct: false,
+            feedback: "物理干预=侵犯了INTJ的自主权。这不会让Ta休息，只会让Ta一边生气一边继续工作。" },
+          { label: "D", text: "「你挣那么多干嘛，陪我不好吗？」", correct: false,
+            feedback: "你说的是你的需求，完全没进入Ta的逻辑体系。INTJ会判定：你无法理解Ta的目标驱动型人格。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：你发现了Ta的「弱点」",
+        scene: "你们在一起半年了，你终于看到了INTJ很少外露的一面——在看一部关于父子关系的电影时，Ta眼圈红了，但立刻别过脸去假装没事。你第一次发现，这个看起来无坚不摧的人，也有被触及的柔软角落。",
+        question: "你该怎么做？",
+        options: [
+          { label: "A", text: "什么也不说，只是把手伸过去放在Ta的手上。看完电影后正常聊天，不提电影内容。但心里默默记住了——Ta会被什么触动。", correct: true,
+            feedback: "你给了INTJ最需要的——尊重Ta的隐私和尊严。不说破，不嘲笑，不夸张。这种恰到好处的温柔，会让INTJ觉得跟你在一起很安全。" },
+          { label: "B", text: "「哇你居然哭了！我第一次看到你这样诶！」", correct: false,
+            feedback: "把INTJ的脆弱当成「发现」来兴奋地宣布，是巨大的冒犯。Ta从此会在你面前更加警惕。" },
+          { label: "C", text: "「没事的，想哭就哭出来吧。」", correct: false,
+            feedback: "虽然是善意的，但你「允许」了Ta哭——INTJ不需要你的允许，尤其是关于Ta自己都没决定要流露的情感。这会让Ta觉得被居高临下地安慰了。" },
+          { label: "D", text: "「原来你也有这一面啊，突然觉得你离我近了一点。」", correct: false,
+            feedback: "虽然听起来像称赞，但INTJ会理解为——「之前的我离你很远」。Ta不喜欢自己的脆弱被拿来当亲密的燃料。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta质疑你们的未来",
+        scene: "INTJ突然对你说：「我最近一直在评估我们的长期兼容性。」Ta拿出一套Ta自己设计的「分析框架」——你们的价值观匹配度、职业规划交集、生活习惯差异、甚至财务预测。最后Ta说：「数据上有一些风险点。」",
+        question: "你怎么回应这套「分析」？",
+        options: [
+          { label: "A", text: "认真看了他的分析框架，然后说：「你这个框架很全面，我看到你花了很多心思。但有几个变量你可能低估了——比如我们彼此适应对方的能力。要不要在框架里加一个'共同成长指数'？因为我觉得这才是最关键的变量。」", correct: true,
+            feedback: "你没有否定分析（肯定了他的思维方式），但加入了自己的视角，而且用的也是分析性语言。INTJ会觉得：「这个人不但不怕我的分析，还能参与进来。」这是最高级别的匹配。" },
+          { label: "B", text: "「你居然在'分析'我们的关系？？感情能用数据分析吗？」", correct: false,
+            feedback: "对INTJ来说，任何事都能被分析——包括感情。否定分析的价值=否定他的核心思维方式。这不只是分歧，是路线之争。" },
+          { label: "C", text: "「你是不是不想在一起了？直接说吧。」", correct: false,
+            feedback: "你完全误解了INTJ的意图。分析关系≠想分手——对INTJ来说，分析恰恰表明他重视这段关系，在认真规划。你的反应会让他觉得「我做事的方式永远不会被理解」。" },
+          { label: "D", text: "不看框架，直接说：「不管数据怎么说，我就是想跟你在一起。」", correct: false,
+            feedback: "虽然浪漫，但在INTJ听来很空洞。你完全规避了他花了时间做的分析——这在他看来是不尊重和不参与。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：Ta的价值观受到了挑战",
+        scene: "INTJ在工作中遇到了一个道德困境——上司要求他做一个在技术上可行但可能有伦理风险的决定。他很冷静地跟你分析了利弊，但你知道他在挣扎——他的「建筑师」人格在面对灰色地带时会有深深的不安。",
+        question: "你怎么帮他？",
+        options: [
+          { label: "A", text: "「我相信你的判断力。你是那种不会为了短期利益牺牲原则的人——这恰恰是我最尊重你的地方。不管你决定怎么做，我支持你。如果需要多一个角度帮你想，我随时在。」", correct: true,
+            feedback: "你肯定了INTJ最珍视的品质——原则和判断力。没有替他决定，但给了无条件的信任。这种支持方式最契合INTJ的独立性。" },
+          { label: "B", text: "「这有什么好纠结的，道德不就该放在第一位吗？辞职吧。」", correct: false,
+            feedback: "简化复杂问题并提供一刀切的解决方案——INTJ最反感这个。而且你替他做了决定，剥夺了他的自主权。" },
+          { label: "C", text: "「别想太多了，按老板说的做呗，反正也不是你的责任。」", correct: false,
+            feedback: "放弃原则的建议会让INTJ重新审视你的价值观。如果你们在这方面不兼容，他可能会重新评估关系。" },
+          { label: "D", text: "「你想太多了，这根本不是什么大问题。」", correct: false,
+            feedback: "你轻描淡写了他最在意的道德议题。INTJ会觉得自己关心的事在你眼里毫无分量——信任屏障开始建立。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「我是不是太冷漠了」",
+        scene: "深夜，INTJ关掉了正在看的工作文档，转向你。他的表情不像平时那样冷静自持：「有件事我想了很久。我知道自己在情感表达上不太擅长——不会说很多甜言蜜语，不会给你惊喜，有时候你觉得我不够'在乎'。你觉得……我是不是太冷漠了？」",
+        question: "你的回答是？（这是INTJ最罕见的自我暴露）",
+        options: [
+          { label: "A", text: "「你不是冷漠，你是用另一种方式在表达。你会在忙到凌晨的时候问我吃了没——虽然语气像在汇报工作。你会帮我分析每一个难题，哪怕我只想要一个拥抱。你会把我们的未来放在电子表格里规划——这很'你'，而我喜欢的就是这个'你'。你不必学会说甜言蜜语——我已经学会了听你的另一种语言。」", correct: true,
+            feedback: "INTJ沉默了很久，然后轻声说了一句「谢谢」。这是他能说出的最高浓度的情感表达。从这一刻起，你在他心里的位置——'不可替代'。」" },
+          { label: "B", text: "「确实有点冷漠，习惯了。」", correct: false,
+            feedback: "INTJ不是冷漠，是情感表达的不同编码。你认同了「冷漠」这个标签——而这正是他内心最深处的恐惧——「也许我真的不适合谈恋爱」。" },
+          { label: "C", text: "「你对我好我就满足了，不用想那么多。」", correct: false,
+            feedback: "虽然听起来圆场了，但你回避了他的核心问题。INTJ罕见地敞开心扉，你却轻轻绕开——下次不会再有了。" },
+          { label: "D", text: "「你可以试着多说说'我爱你'啊，又不会少块肉。」", correct: false,
+            feedback: "你在教INTJ「应该这样表达」——而这意味着「你现在的方式不行」。他即使学了你教的方式，心里也会有一个声音说：'这样够了吗？'答案可能是——'永远不会够'。" }
+        ]
+      }
     ]
   },
+
+  // ==================== ENFJ ====================
   {
-    id: 5,
-    title: "第5关：Ta想要独处",
-    scene: "交往两个月后，INFP突然说：「我这周末想一个人待着，不出去了。」Ta的语气很平静，但你觉得不太寻常。",
-    question: "你的回应是？",
-    options: [
-      { label: "A", text: "「好呀，那你好好充电。不过如果有任何事想找我，我随时在。」然后真的不去打扰Ta。", correct: true,
-        feedback: "你给了Ta空间又不失温暖，INFP会觉得你真的很懂Ta。" },
-      { label: "B", text: "你是不是生气了？是不是我哪里做得不好？", correct: false,
-        feedback: "过度解读会让INFP觉得和你在一起很累，连休息都要解释。" },
-      { label: "C", text: "好吧……那你什么时候想见我？明天行吗？", correct: false,
-        feedback: "刚给空间就急着约下次，INFP会觉得压力又回来了。" },
-      { label: "D", text: "周末给你点惊喜！我偷偷过去找你！", correct: false,
-        feedback: "惊喜变惊吓，INFP的独处时间被破坏会非常烦躁。" }
-    ]
-  },
-  {
-    id: 6,
-    title: "第6关：Ta分享了一件「小事」",
-    scene: "INFP兴奋地给你看Ta刚写的一首小诗，眼睛亮晶晶地等你评价。诗写得……说实话，有点抽象，你没太看懂。",
-    question: "你该怎么说？",
-    options: [
-      { label: "A", text: "认真读两遍，然后说：「我喜欢这句——『月光在茶杯里打了个盹』，很有画面感。你写的时候在想什么？」", correct: true,
-        feedback: "你抓住了具体的闪光点并表达好奇，INFP会滔滔不绝地跟你分享创作心路。" },
-      { label: "B", text: "写得不错呀！你真有才华！", correct: false,
-        feedback: "太笼统的夸奖=没认真看，INFP能敏锐地察觉到你在敷衍。" },
-      { label: "C", text: "说实话我没太看懂，但你喜欢就好。", correct: false,
-        feedback: "虽然诚实，但INFP会觉得你不愿意走进Ta的世界。" },
-      { label: "D", text: "你怎么不写点通俗易懂的东西？", correct: false,
-        feedback: "这是对INFP灵魂的直接否定，伤害值拉满。" }
-    ]
-  },
-  {
-    id: 7,
-    title: "第7关：你的朋友不喜欢Ta",
-    scene: "你带INFP参加朋友聚会，Ta全程很安静。聚会结束后，你的好朋友私聊你说：「你对象好闷啊，你们真的合适吗？」",
-    question: "你该怎么办？",
-    options: [
-      { label: "A", text: "对朋友说：「Ta只是慢热，熟了以后很可爱的。下次换个安静点的地方，你再给Ta一次机会？」同时不把朋友的话告诉INFP。", correct: true,
-        feedback: "你在外面保护了Ta，也没让负面评价影响你们的关系。INFP如果知道了会很感动。" },
-      { label: "B", text: "把朋友的话告诉INFP，然后说「你得外向一点才行」。", correct: false,
-        feedback: "INFP会觉得自己被嫌弃，自信心受到严重打击。" },
-      { label: "C", text: "以后再也不带INFP见朋友了。", correct: false,
-        feedback: "隔离不是保护，INFP会觉得你在「藏」着Ta。" },
-      { label: "D", text: "跟朋友吵一架：「你不懂Ta就别乱说！」", correct: false,
-        feedback: "过度维护反而会让朋友和INFP都尴尬。" }
-    ]
-  },
-  {
-    id: 8,
-    title: "第8关：Ta为你做了一件「没用」的礼物",
-    scene: "INFP花了两个星期，用手工做了一本你们两个人的「恋爱手账」，里面有你们的照片、电影票根、手写的小故事。你翻了翻，发现有些页被胶水弄皱了，字迹也有点歪。",
-    question: "你的反应是？",
-    options: [
-      { label: "A", text: "一页一页认真翻完，然后抱紧Ta：「这是我收到过最用心的礼物。以后我们每年做一本好吗？」", correct: true,
-        feedback: "你看到了背后的心意而非成品的不完美。INFP会记住这句话很久很久。" },
-      { label: "B", text: "「哇好可爱！不过你可以买个更好的本子，这个纸太薄了。」", correct: false,
-        feedback: "在INFP听来=「你做的东西不够好」，心血被否定。" },
-      { label: "C", text: "笑着翻了两下放在一边：「谢谢宝贝！」", correct: false,
-        feedback: "敷衍的态度让INFP觉得自己的心意不被珍视。" },
-      { label: "D", text: "「你花那么多时间做这个干嘛呀，买一本不就行了。」", correct: false,
-        feedback: "这句话等于在说「你的用心一文不值」。" }
-    ]
-  },
-  {
-    id: 9,
-    title: "第9关：Ta突然说要辞职去追梦",
-    scene: "INFP有一天认真地对你说：「我想辞职了，我想去学插画/做音乐/写小说。我知道这不太现实，但是……」Ta看着你，既期待又害怕。",
-    question: "你的回应是？",
-    options: [
-      { label: "A", text: "「我支持你追梦。不过我们可以一起做个计划——先存几个月的生活费，业余时间试试水，感觉稳了再辞职，好吗？」", correct: true,
-        feedback: "你既没有否定梦想，也给了现实的保护。INFP会觉得「有人懂我，还愿意帮我落地」。这就是Ta想要的安全感。" },
-      { label: "B", text: "「别傻了，现实点行不行？你画画能养活自己吗？」", correct: false,
-        feedback: "直接否定梦想=否定INFP的灵魂，Ta会非常受伤。" },
-      { label: "C", text: "「去吧！我养你！」", correct: false,
-        feedback: "虽然听起来很浪漫，但INFP内心会觉得压力——「万一失败了呢？」不加思考的支持显得不成熟。" },
-      { label: "D", text: "「等你找到下份工作再说吧。」", correct: false,
-        feedback: "你完全回避了Ta真正想说的——Ta在试探你支不支持Ta的梦想。" }
-    ]
-  },
-  {
-    id: 10,
-    title: "第10关：Ta的「小习惯」让你不舒服",
-    scene: "INFP有一个让你不太舒服的习惯——比如，Ta经常在约会时走神发呆，你觉得不够投入。",
-    question: "你该怎么跟Ta沟通这件事？",
-    options: [
-      { label: "A", text: "「我注意到你有时候会走神，我在想是不是我讲的话题不够吸引你？还是你需要一点时间放空？我想知道你的感受。」", correct: true,
-        feedback: "你把问题定位在「我-你之间」而非「你-有问题」，INFP会非常愿意配合。" },
-      { label: "B", text: "你能不能跟我在一起的时候专心一点？", correct: false,
-        feedback: "「你」字开头等于指责，INFP会退缩进自己的壳里。" },
-      { label: "C", text: "每次Ta走神你就叹一口气。", correct: false,
-        feedback: "消极暗示会让INFP觉得自己怎么做都不对。" },
-      { label: "D", text: "我觉得你根本不在乎我。", correct: false,
-        feedback: "过度解读会直接引爆INFP的情绪雷区。" }
-    ]
-  },
-  {
-    id: 11,
-    title: "第11关：Ta的原生家庭问题被触发了",
-    scene: "你们在聊童年时，INFP突然沉默了，眼圈泛红但强忍着，说了一句：「有些事我不想说。」",
-    question: "你的应对是？",
-    options: [
-      { label: "A", text: "放下手里的东西，安静地坐近一点，说：「不说也没关系，我就在这儿。」", correct: true,
-        feedback: "边界感+陪伴感，这是INFP最需要的那种「安全的爱」。" },
-      { label: "B", text: "说出来会好受一点，我是你男朋友/女朋友啊。", correct: false,
-        feedback: "你越逼，Ta越关上心门。" },
-      { label: "C", text: "不想说就不说，来吃这个，超好吃！", correct: false,
-        feedback: "转移话题=回避深度，INFP会判定你「不懂我」。" },
-      { label: "D", text: "也分享一个自己不开心的经历，试图「比惨」。", correct: false,
-        feedback: "比惨=否定Ta的感受，会让Ta觉得「我的情绪不值得被重视」。" }
-    ]
-  },
-  {
-    id: 12,
-    title: "第12关：终极考验——Ta问你「你爱我什么」",
-    scene: "一个安静的夜晚，INFP靠在你的肩膀上，突然小声问：「你爱我什么？」",
-    question: "你的回答是？（这一关是重头戏）",
-    options: [
-      { label: "A", text: "认真思考后说：「爱你发呆时的样子，爱你写的诗里那种温柔，爱你会为一只流浪猫蹲在路边半小时，爱你明明自己难过却先问我『你还好吗』——最重要的是，跟你在一起，我觉得世界没那么糟糕了。」", correct: true,
-        feedback: "你不仅说出了具体特质，还提到了Ta的内在价值和你的情感体验。INFP听完会哭，然后紧紧抱住你。这是Ta一生都在等的回答。" },
-      { label: "B", text: "爱你好看，爱你温柔，爱你对我好。", correct: false,
-        feedback: "太笼统，像模板。INFP会觉得你爱的只是「女朋友」这个角色，不是真正的Ta。" },
-      { label: "C", text: "我也说不清，就是感觉对了。", correct: false,
-        feedback: "「说不清」=没走心。INFP会把这句话记很久，作为「你不够爱」的证据。" },
-      { label: "D", text: "你为什么突然问这个？是不是我做错什么了？", correct: false,
-        feedback: "你在回避问题，还把压力抛回给Ta。INFP会后悔问了这个问题。" }
+    id: 'enfj',
+    category: 'mbti',
+    name: 'ENFJ',
+    fullName: '主人公',
+    emoji: '☀️',
+    theme: { primary: '#d4775e', accent: '#f0a07c', gold: '#e8c97a' },
+    description: '富有魅力的天生领袖，温暖而充满感染力，渴望帮助每个人成为更好的自己',
+    tags: ['温暖', '领导力', '共情'],
+    winQuotes: [
+      '「我一直觉得自己是那个"给予"的人——直到遇见你。原来被人看见、被人接住的感觉，是这么温暖。」'
+    ],
+    loseMsg: 'ENFJ把所有的光和热都给了别人，唯独忘了自己。试着看到Ta光芒背后的疲惫，你会走得更远。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：初次约会",
+        scene: "你和ENFJ第一次约会。Ta选了一个很有心思的地方——一家可以自己动手做陶艺的工作室。Ta说：「聊天固然好，但我更喜欢一起创造点什么。而且，就算做出来的杯子很丑，也是属于我们两个人的。」",
+        question: "你的第一反应是？",
+        options: [
+          { label: "A", text: "「这个主意太棒了！你在安排这些的时候是不是已经在想我会喜欢什么了？我真的感受到了你的用心。」然后把袖子卷起来准备大干一场。", correct: true,
+            feedback: "ENFJ最在意的就是「对方有没有看到我的用心」。你精准地捕捉到了，并且公开表达了感谢。Ta心里在想：'这个人能看到我'。这是一个非常好的开始。" },
+          { label: "B", text: "「哎呀我手工很差劲的，换个地方吧。」", correct: false,
+            feedback: "ENFJ精心策划的体验被你轻描淡写地否掉了。Ta会微笑着说「没问题我们换地方」，但内心已经在想：'你没看到我的心思'。" },
+          { label: "C", text: "「你挺会安排的，以前经常带人来吧？」", correct: false,
+            feedback: "你好像在测试Ta——ENFJ不喜欢被试探。Ta选择这个地方不是为了秀经验，是为了和你创造共同回忆。" },
+          { label: "D", text: "默默跟着做，但不怎么说话也不评价。", correct: false,
+            feedback: "ENFJ需要反馈——哪怕是一句'这泥巴好凉'。你的沉默会让Ta焦虑地在脑海里反复检查自己哪里做错了。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta过度付出了",
+        scene: "你们在一起一个月。你发现ENFJ为你做了很多事——每天问你吃什么、帮你整理工作问题、在你加班时送夜宵、记住你每一个随口提的小愿望。但你隐隐觉得——Ta好像在透支自己。今天Ta看起来特别累但还是笑着说「没事我习惯了」。",
+        question: "你该怎么做？",
+        options: [
+          { label: "A", text: "拉住Ta的手：「你做的已经够多了——真的够了。今天换我来照顾你。你想吃什么？需要我做什么？不要回答'不用'——这不是问句，是通知。」", correct: true,
+            feedback: "ENFJ愣住了——因为很少有人对Ta说'换我来'。Ta的眼眶有点湿润。你给了Ta最需要的东西：不是要求Ta停止付出，而是让Ta体验一次被照顾的感觉。" },
+          { label: "B", text: "「你也要照顾好自己啊，别老是操心别人。」", correct: false,
+            feedback: "建议本身没错，但ENFJ听过太多次了。问题是——Ta知道该照顾自己，但不知道怎么做。你需要用实际行动示范，而不是口头提醒。" },
+          { label: "C", text: "「你这样付出，我压力好大。」", correct: false,
+            feedback: "ENFJ会觉得自己的爱成了负担——这是Ta最害怕的事。Ta的付出不是为了给你压力，是Ta表达爱的方式。" },
+          { label: "D", text: "享受被照顾，觉得这是理所当然。", correct: false,
+            feedback: "把ENFJ的付出当理所当然是慢性毒药。Ta表面不会说什么，但心里在记录：'这个人值得我付出吗？'总有一天答案会是no。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：Ta需要你的认可",
+        scene: "ENFJ在公司里组织了一场大型活动，获得了很好的反响。但Ta回来后有点闷闷不乐：「老板说'做得不错'，同事说'辛苦了'，但我总觉得……没有人真的看到我到底做了多少。」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「我看到了。你为了这个活动准备了多久？应该有一个多月吧。我知道你联系了多少人、改了十几版方案、提前一晚去现场布置。'做得不错'太轻了——你应该得到'做得太好了，好到让人感动'。」", correct: true,
+            feedback: "ENFJ一直在等——不是等一个夸奖，是等有人看到Ta真实付出的程度。你一句一句说出来的时候，Ta感觉自己的努力终于有了重量感。" },
+          { label: "B", text: "「你就是想太多了，别人都说你做得好就行了呗。」", correct: false,
+            feedback: "你否定了Ta对被认可的需求。ENFJ不是矫情，是付出后需要确认'我做的事情对别人有真实的帮助'。" },
+          { label: "C", text: "「你老板确实不太会夸人。你应该换个地方。」", correct: false,
+            feedback: "过度认同Ta的不满并给出极端建议——这让ENFJ感到被你加码了负面情绪。Ta需要的是被看见，不是被添柴加火。" },
+          { label: "D", text: "「我带你出去庆祝一下！」", correct: false,
+            feedback: "庆祝是好的，但你没有回应对Ta努力的认可。ENFJ会享受晚餐，但内心依然有个空洞——'你真的看到我做了多少吗？'" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta在别人面前忽略了你",
+        scene: "你们一起参加一个小型聚会，ENFJ全程在照顾别人的需求——帮A倒水、听B吐槽、给C提建议。整整两个小时，Ta几乎没有跟你说一句话。聚会结束后，Ta笑着对你说：「今天的大家都好可爱啊！」",
+        question: "你怎么说？",
+        options: [
+          { label: "A", text: "「你真的是一个很温暖的人——我看你今晚照顾了好多人。不过说实话我今晚有点孤单——下次聚会能不能偶尔坐到我旁边来？不用一直陪我，但让我知道你在哪。」", correct: true,
+            feedback: "你先肯定了Ta的核心价值（温暖、照顾他人），再诚实地说出需求。ENFJ非常感激这种沟通方式——Ta不会觉得被攻击，反而会觉得'原来你在乎我陪伴的质量'。" },
+          { label: "B", text: "「你今晚都没理我，只顾着跟别人聊天。」", correct: false,
+            feedback: "直接指责会让ENFJ从「今天好开心」坠入「我是不是又让在乎的人失望了」的深渊。你的语气抹杀了Ta整晚的善意。" },
+          { label: "C", text: "假装无所谓：「挺好的啊。」但语气冷淡。", correct: false,
+            feedback: "ENFJ对情绪信号的敏感度极高。你的话是一个意思，语气是另一个意思——Ta会花一整晚在脑子里分析'我到底哪里做错了'直到崩溃。" },
+          { label: "D", text: "下次找个借口不去参加聚会。", correct: false,
+            feedback: "回避策略不会解决问题，反而剥夺了ENFJ的一个快乐来源。Ta失去社交乐趣的同时，还会琢磨你为什么老是不参加。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：有人批评你",
+        scene: "你和ENFJ一起参加一个活动，有人当面对你提出了不太友好的批评，你还没来得及反应，ENFJ已经替你怼回去了——有理有据、不卑不亢。你既感动又有点复杂：你并不需要别人为你出头。",
+        question: "事后你怎么跟Ta聊这件事？",
+        options: [
+          { label: "A", text: "「谢谢你第一时间站在我这边——让我觉得有人撑腰的感觉真好。不过下次你能不能先给我一个眼神？我有能力为自己说话，你的支持是我勇气的一部分，但不是全部。我们组一个'后背给对方'的双人队，而不是你冲在前面挡。」", correct: true,
+            feedback: "你肯定了ENFJ的保护欲——这是核心需求。然后你表达了平等合作的愿望——这也是Ta需要的。ENFJ会觉得你在教Ta一种更健康的关系模式。" },
+          { label: "B", text: "「下次你不要替我说话，我自己可以处理。」", correct: false,
+            feedback: "生硬的拒绝会刺伤ENFJ的保护欲。Ta听到的是——「你的帮助不被需要」。这对ENFJ来说是情感上的重击。" },
+          { label: "C", text: "什么都不说，心里感激但不想让Ta觉得自己被动。", correct: false,
+            feedback: "不反馈=让ENFJ继续按照Ta的方式行事。你心里的话语如果不说出来，Ta永远不会调整。" },
+          { label: "D", text: "「你当时太冲动了，场面好尴尬。」", correct: false,
+            feedback: "你否定了Ta的行动而不只是方式。ENFJ会觉得——我为你站出来，你却在怪我。以后不会再这么做了——但内心会伤痕累累。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：Ta为了你放弃了自己的计划",
+        scene: "ENFJ原本这周末要跟一群老朋友聚会（他们约了好几次才约上）。但听说你周末要搬家后，Ta二话不说取消了朋友的约会：「我来帮你搬！」你看着Ta——你不知道该感动还是觉得不安。",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「你愿意放弃聚会来帮我，我真的很感动。但我不想你为了我牺牲自己的快乐。这样——帮你问问朋友们能不能换个时间？如果不行，你必须去聚会，我有办法搞定搬家。我们需要你也有自己的生活。」", correct: true,
+            feedback: "你看到了Ta的付出（感谢），保护了Ta的快乐（不让牺牲），并且提出了解决方案。这也是在教会ENFJ——爱一个人不需要在'自己'和'对方'之间二选一。" },
+          { label: "B", text: "「太好了！你太贴心了！那周末见！」", correct: false,
+            feedback: "你毫无负担地接受了Ta的牺牲——这让ENFJ觉得自己的快乐在关系里理所当然地排在你后面。Ta会开心帮你，但这个模式会累积到某天爆炸。" },
+          { label: "C", text: "「不用管我，你去聚会吧。」但搬家那天累得半死。", correct: false,
+            feedback: "你拒绝了帮助，但ENFJ一旦知道你自己搞得很累，会产生巨大的内疚。这让Ta觉得'下次说什么也不能听你的了'。" },
+          { label: "D", text: "「你总是为了别人放弃自己——这样好吗？」", correct: false,
+            feedback: "虽然你说的是对的，但时机不对。在Ta为你做出牺牲的当下指出这个模式，听起来像是在指责而不是关心。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：你们起了争执——关于如何对待「坏人」",
+        scene: "你们共同认识一个人，这个人明显伤害过ENFJ——利用过Ta的善良好几次。但ENFJ说：「每个人都有原因，我们应该再给他一次机会。」你不同意：「你已经被利用三次了，这不是善良，是不设防。」ENFJ表情变了。",
+        question: "你发现你的语气伤到了Ta。接下来怎么说？",
+        options: [
+          { label: "A", text: "「对不起，我语气太冲了。我的核心意思是——我担心你。你的善良是我最爱你的地方之一——但那个人的行为模式已经是一种'掠夺'了。你的善良应该给值得的人，包括你自己。他不行。」", correct: true,
+            feedback: "你先道歉（修复语气伤害），然后肯定Ta的善良（确认你的爱），再给出理性建议（而不是命令）。ENFJ听完会沉默几秒，然后说：'……你说得对，我知道了。'" },
+          { label: "B", text: "「你就是太好骗了，被人卖了还帮人数钱。」", correct: false,
+            feedback: "智慧被否定=核心伤害。ENFJ不是傻，是选择相信。贬低Ta的判断力会让Ta觉得你居高临下。" },
+          { label: "C", text: "「好吧，随你便，你开心就好。」", correct: false,
+            feedback: "消极妥协=你在放弃关心Ta。ENFJ需要的是有人帮Ta看到盲点，而不是嫌麻烦就说随你。" },
+          { label: "D", text: "「你要给他机会就给吧，但我不会参与。」", correct: false,
+            feedback: "你在划清界限但保留了谴责。ENFJ会觉得你在站队——站到了Ta的对立面。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：Ta的「完美形象」裂了一条缝",
+        scene: "ENFJ一直给人一种「什么都能搞定」的感觉。但今天Ta崩溃了——在厨房里因为打碎了一个杯子突然大哭起来。你不是没见过人哭，但你第一次见ENFJ哭——这个永远在照顾别人的人，终于塌了。",
+        question: "你怎么接住Ta？",
+        options: [
+          { label: "A", text: "什么都不说，先拿纸/扫帚把玻璃碴收拾好，然后蹲到Ta面前，轻轻说：「杯子碎了就碎了，你的情绪比任何一个杯子都重要。想哭就哭——今天你不需要照顾任何人，我在这里照顾你。」", correct: true,
+            feedback: "ENFJ需要一个「允许不完美」的瞬间。你给了——安全保障（收拾碎片）+情感许可（允许脆弱）+承诺（我来照顾你）。Ta会抱着你哭很久，哭完以后会深深爱着你。" },
+          { label: "B", text: "「一个杯子而已，别哭了。」", correct: false,
+            feedback: "杯子不是重点。ENFJ哭的不是杯子，是长期压抑的情感。轻飘飘的安慰让Ta觉得自己连哭都是小题大做——于是更难过了。" },
+          { label: "C", text: "「别哭了，你平时不是这样的。」", correct: false,
+            feedback: "你在暗示——哭是反常的。ENFJ会觉得自己的脆弱让你不舒服了，于是立刻收起眼泪。但伤口更深了。" },
+          { label: "D", text: "「你是不是最近压力太大了？说出来就好了。」但站着不动没有身体接触。", correct: false,
+            feedback: "关心是对的，但缺少了ENFJ最需要的——身体上的安慰。ENFJ对肢体语言很敏感，你站着不动，Ta会解读为'你不想离我太近'。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：你需要独处，但Ta担心",
+        scene: "你最近压力很大，跟ENFJ说：「我需要几天一个人待着。」ENFJ立刻答应了——「好的，你需要的时候找我」。但第二天开始，Ta开始频繁确认——「你还好吗？」「不是我的问题吧？」「真的没事吗？」显然，Ta在担心。",
+        question: "你怎么处理这个微妙的情况？",
+        options: [
+          { label: "A", text: "「我需要独处，是因为我需要充电——跟你没关系，你是我的充电器以外的另一个东西——叫'理由'。我充满电就会回来找你。每天给你发一条'存活确认'，你可以回复——但不要问'还好吗'，问'今天有什么小事发生吗'，这样我能分享但不需要解释情绪。成交？」", correct: true,
+            feedback: "你解释了原因（消除Ta的自我怀疑），提供了替代方案（给Ta一个'关心'的出口），设立了边界（独处但不能断联）。ENFJ会觉得——你没在推开Ta，而是在教Ta一种新的相处方式。" },
+          { label: "B", text: "「我说了我需要独处！你能不能别一直问？」", correct: false,
+            feedback: "不耐烦会直接引爆ENFJ的焦虑——「你不需要我了」→「你是不是不爱我了」→「我们是不是要分手了」。所有的不安同时触发。" },
+          { label: "C", text: "不回消息，觉得「我说得很清楚了」。", correct: false,
+            feedback: "沉默会让ENFJ的想象力失控。Ta脑子里在编写一个「我是不是做错了什么」的灾难剧本。" },
+          { label: "D", text: "「你这样我会很难受的，我需要空间。」", correct: false,
+            feedback: "你用你的负面情绪回应了Ta的关心——ENFJ收到双重打击：被拒绝+让别人不开心。从此Ta会更不敢表达关心。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：你冷落了Ta获得成就的时刻",
+        scene: "ENFJ在工作中获得了一个重要的晋升/认可。Ta兴奋地跟你分享，但你那天正为别的事烦躁，只敷衍地说了声「恭喜啊」。Ta的笑容明显僵了一下，然后立刻转换成担忧模式：「你看起来不太好——需要聊聊吗？」",
+        question: "你该怎么做？",
+        options: [
+          { label: "A", text: "停下手上的事，认真地：「等等，先别管我。你刚刚在分享一个对你很重要的时刻——这是我今天听到的最好的消息，但我的反应配不上它。再说一遍好吗？这次我会全神贯注地听。」然后放下一切。", correct: true,
+            feedback: "你承认了自己的疏忽（真诚），并要求重来（给Ta一个被重视的时刻）。ENFJ会笑着再说一遍——这次眼睛里会有泪光。不是伤心，是被看到后的感动。" },
+          { label: "B", text: "「不好意思，我今天心情不好。恭喜。」", correct: false,
+            feedback: "虽然道歉了，但你仍然没有给Ta的时刻应有的分量。ENFJ会说「没关系」，然后默默把这份开心收进心里——不再期待你的共鸣。" },
+          { label: "C", text: "「嗯嗯恭喜！但你刚说的真的提醒我了——我今天遇到一个事特别烦……」", correct: false,
+            feedback: "你瞬间把话题拉回自己身上了。ENFJ会切换成倾听者模式——但这次的转换里有很隐微的失落。Ta学会了「跟你分享开心是会被打断的。」" },
+          { label: "D", text: "继续烦躁，没有意识到自己伤害了Ta。", correct: false,
+            feedback: "你没有恶意——但ENFJ会觉得在你们的关系里，Ta的开心永远排在你的不开心后面。长此以往，Ta不会再主动跟你分享了。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：Ta感到「付出的爱是不对等的」",
+        scene: "ENFJ今天特别安静。你问了好几次，Ta终于说了：「我不是在抱怨，只是有时候觉得……我好像总是在追着你的情绪跑。你低落的时候我哄你，你开心的时候我陪你，你需要空间的时候我退一步。但我低落的时候……好像自己熬过去的。」",
+        question: "你感受到了一丝心痛，你怎么回应？",
+        options: [
+          { label: "A", text: "「……你说得我很难受，因为你说的每一个字都是对的。我太习惯被照顾，忘了一个照顾者也需要被照顾。这碗水没端平，是我的问题。我需要知道——你觉得最不被看到的是什么时候？我想从那个点开始补。」", correct: true,
+            feedback: "你感受到了心痛（共情），承认了不对等（诚实），要求具体化问题（行动导向）。ENFJ终于感觉到——自己的需求被摆在了桌面上，并且有人在认真看。这不是解决问题的结束，但这是解决问题的开始——而且开得很好。" },
+          { label: "B", text: "「你怎么不早说？你要说出来我才知道啊。」", correct: false,
+            feedback: "问题在你没看到，不在Ta没说。把责任推给Ta的不表达，让ENFJ觉得——'果然，我表达需求=做错了事'。这个模式会加重Ta的困难。" },
+          { label: "C", text: "「我有照顾你啊，比如上次……还有那次……你不记得吗？」", correct: false,
+            feedback: "列清单反驳=陷入辩护模式。ENFJ不是说你零付出，是说付出的天平倾斜了。你的辩护会彻底关上沟通的门。" },
+          { label: "D", text: "「好吧对不起，我以后多注意。」然后几天表现很殷勤。", correct: false,
+            feedback: "短期行为改变但缺乏深度理解——ENFJ看穿你的补偿心理。等几天后你恢复原状，失望会比第一次更深。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「你觉得我总是照顾别人，是不是很累」",
+        scene: "深夜，ENFJ枕着你的肩膀，罕见地没有说话。然后Ta轻轻问：「有时候我觉得自己……像一个永远不会停的陀螺——照顾家人、帮助朋友、支持同事、陪伴你。我这么做是因为我愿意。但偶尔也会觉得……如果有人能让我停下来就好了。你觉得——总是照顾别人，是不是很累？」",
+        question: "你的回答是？（Ta在暗示——想在你这里找到一个可以停靠的港湾）",
+        options: [
+          { label: "A", text: "「累，当然累。你不是机器，你是一个把心给了很多很多人的人。但在所有这些被你照顾的人里面——你忘了最需要被照顾的那个人：你自己。我永远支持你照亮别人——但当你累了，我是那个帮你拿灯的。而且我拿着的这盏灯，是照着你。不需要一直照亮别人——偶尔也允许自己被照亮。」", correct: true,
+            feedback: "ENFJ听完会沉默很久，然后眼泪静静流下来。不是悲伤，是一种释放——有人不仅看到了陀螺的旋转，还看到了陀螺的疲惫，还告诉Ta——你可以停。这是我这里。你会感觉肩头的重量突然少了一半。" },
+          { label: "B", text: "「照顾别人是你最大的优点啊，别想太多了。」", correct: false,
+            feedback: "你在肯定优点的同时回避了疲惫。ENFJ知道照顾别人是优点——问题是Ta问的是「累不累」，而你答的是「好不好」。这不是回答，是绕路。" },
+          { label: "C", text: "「你就别老照顾别人了，顾好自己不就行了。」", correct: false,
+            feedback: "你在让ENFJ否定自己的核心驱动力——而这不可能。Ta做不到'不照顾别人'——Ta需要的是有人告诉Ta'你可以在照顾别人的同时被照顾'。" },
+          { label: "D", text: "「看你平时挺开心的，我以为你享受这些呢。」", correct: false,
+            feedback: "你完全没看到表象下的疲惫。ENFJ听到这句话会感到深深的孤独——连最亲近的人都没看出来，是真的没有人会看到了。" }
+        ]
+      }
     ]
   }
+,
+
+  // ==================== 挽回 INFP ====================
+  {
+    id: 'infp-winback',
+    category: 'winback',
+    name: '挽回 INFP',
+    fullName: '调停者',
+    emoji: '🦋💔',
+    theme: { primary: '#6c5b7b', accent: '#c06c84', gold: '#d4a574' },
+    description: '你们分手了。你说过一句"你想太多了"，击碎了Ta最后的期待。现在Ta沉默地消失了，你还能挽回吗？',
+    tags: ['复合', '挽回', '深情'],
+    winQuotes: [
+      '「你让我失望过，但你回来了。不是来求我原谅，是来告诉我——你看到了自己哪里做错了。我重新打开了那扇我以为永远关上的门。」'
+    ],
+    loseMsg: 'INFP的门一旦关上就很难再打开。但没关系——每一次尝试都是一次成长。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：你们分手了",
+        scene: "分手已经两周了。INFP没有删你微信，但朋友圈变成了一条线。你在共同朋友的动态里看到Ta发了一首自己写的诗——关于破碎和失望。你知道这里的主角是你。",
+        question: "你决定是时候联系Ta了。第一句话你说什么？",
+        options: [
+          { label: "A", text: "「我知道你可能不想理我。但如果可以——我想道歉，不为复合，为我做错的事。」", correct: true,
+            feedback: "INFP看到了这句话。你没有求复合（那太急），也没有假装没事（那太假），而是承认了错误并把选择权留给Ta。这种克制让INFP有些动摇。" },
+          { label: "B", text: "「两周没见了，你还好吗？我很想你。」", correct: false,
+            feedback: "INFP现在最不需要的就是你说想Ta。分手是因为你觉得Ta的感受不重要——说想Ta等于在说你的感受很重要。Ta不会回。" },
+          { label: "C", text: "「我改了很多，要不我们见一面，你亲眼看看？」", correct: false,
+            feedback: "INFP的字典里——真心不需要展示。你说'我改了'本身就暗示你还没改到不需要宣布的程度。" },
+          { label: "D", text: "什么都不说，给Ta的朋友圈写的那首诗点了个赞。", correct: false,
+            feedback: "INFP看到你点赞了——然后更生气了。你宁愿用一些隐晦的方式表达关注，也不愿直接面对Ta。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta终于回复了",
+        scene: "Ta隔了一天才回：「你说吧，我听着。」语气冷淡，但Ta回了。这是你第一次也是唯一一次机会——INFP的耐心只有这么多。",
+        question: "你的开场白核心应该说什么？",
+        options: [
+          { label: "A", text: "「分手那天你说'你从来不听我在说什么'。我最近反复想了这句话——你说得对。我一直在回应，但没有在听。」", correct: true,
+            feedback: "INFP的手指停在了屏幕上。你复述了Ta说过的话——而且精准地指出了问题的本质。Ta忽然觉得你不是来敷衍的。" },
+          { label: "B", text: "「我真的很后悔，当时太冲动了。我们能不能重新开始？」", correct: false,
+            feedback: "太过笼统的忏悔在INFP听来没有任何实感。Ta需要你证明你理解了具体问题，而不是笼统地说后悔。" },
+          { label: "C", text: "「这段时间我想了很多，我确实有很多地方做得不好。比如上次你说的那个事……」", correct: false,
+            feedback: "方向对了，但太啰嗦。INFP需要一句话就触到核心，而不是听你列一份'我错了清单'。" },
+          { label: "D", text: "「我知道你不会轻易回头。但我想让你知道，我没有在等别人——我一直在等你。」", correct: false,
+            feedback: "听起来深情，但INFP听出了潜台词——'我为你牺牲了其他可能性'。这不是道歉，是施加愧疚。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：Ta愿意出来见你了",
+        scene: "你们约在第一次约会那家书店咖啡馆。INFP提前到了，坐在原来那个位置。你坐下时，Ta没有看你，但也没有躲开。桌面上放着一杯没喝的咖啡——这说明Ta也在紧张。",
+        question: "你怎么打破沉默？",
+        options: [
+          { label: "A", text: "「谢谢你来。我知道来见我不容易。」然后就安静等待，不急着推进。", correct: true,
+            feedback: "你没有用热情去冲淡尴尬，也没有急着解释一切。你只是表达感谢然后给了Ta空间。这种不催促的态度让INFP觉得——今天可以慢慢来。" },
+          { label: "B", text: "一坐下就拿出一个小礼物：「给你带了这个，是你最喜欢的那个画家的明信片。」", correct: false,
+            feedback: "礼物本身没问题，但时机错了。INFP此刻需要的是对话，不是礼物。过早的示好会让Ta怀疑——你是在用技巧而不是用心。" },
+          { label: "C", text: "「你还记得吗？第一次约会就在这里。那时候多好啊。」", correct: false,
+            feedback: "回忆杀只有在两人情绪都准备好的时候才有效。现在用回忆来拉近距离，INFP会觉得很刻意——你是在消费过去的美好来逃避面对现在的问题。" },
+          { label: "D", text: "直接道歉，把自己这段时间反思的所有事情说一遍。", correct: false,
+            feedback: "信息量太大了。INFP需要被温柔地对待——你一上来就倾倒所有反思，等于把这场见面变成了你的忏悔大会。Ta没有任何空间表达自己的感受。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta说出真正的分手原因",
+        scene: "沉默了一会儿，你问Ta：「分开这段时间，你有没有什么想跟我说的？」INFP抬起头，第一次直视你：「你知道最让我难过的是什么吗？不是你说过的话，是你让我觉得——我在这段关系里是透明的。我分享的每一件事，你都没有真正在意过。」",
+        question: "这段话很重。你怎么回应？",
+        options: [
+          { label: "A", text: "「我知道。我想弥补——但如果你不想再试，我也接受。重要的是你能说出来。」", correct: true,
+            feedback: "你没有否认、没有辩解、没有急着保证。最关键的是——你说了'如果你不想再试，我也接受'。这句话让INFP第一次觉得——你是为了Ta而来，不是为了你自己。" },
+          { label: "B", text: "「对不起，我真的不是故意的。我只是有时候太忙了没注意到。」", correct: false,
+            feedback: "INFP听到'不是故意的'就心凉了——问题的关键在于结果，不在意图。至于'太忙了'，这恰好是Ta觉得不被重视的证据。" },
+          { label: "C", text: "开始举具体的例子证明你有在听：「我记得你跟我说过你喜欢那个作家的书，还有那次你讲你妈妈的事……」", correct: false,
+            feedback: "你陷入了辩护模式。INFP不是在考你记忆力——Ta在说你没有真正进入Ta的世界。你列举记住了什么，恰恰证明了你在把'听Ta说话'当任务。" },
+          { label: "D", text: "沉默了很久，什么也没说，只是低着头。", correct: false,
+            feedback: "沉默不是接纳。此刻INFP需要听到你接住了这些话——什么都不说会让Ta觉得你默认了罪名但无力改变。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：Ta的防御在松动",
+        scene: "经过几次小心翼翼的接触，INFP开始偶尔回复你的消息——虽然不热情，但也不冷了。有一天Ta给你发了一首歌，是你们在一起时常听的那首。附了一句：「今天在路上偶然听到了。」",
+        question: "这条消息是试探——你怎么回？",
+        options: [
+          { label: "A", text: "「我也一直在听这首。每次听到副歌部分都会想起你。」然后自然地聊了几句最近的生活，没有追问感情。", correct: true,
+            feedback: "你回应了情感的暗示但没有过度解读。你说你也想Ta——但用的是歌而不是直白的'我想你'。这种含蓄的共鸣恰好和INFP的波长一致。Ta放下手机时嘴角有了一点笑意。" },
+          { label: "B", text: "「你还记得这首歌！你是不是也在想我？」", correct: false,
+            feedback: "你抓住了信号但解读过头了。把一首歌直接翻译成'你想我'太粗糙了——INFP喜欢的是那种不说破的默契。你的兴奋声让Ta有点后悔发了那条消息。" },
+          { label: "C", text: "「嗯嗯，确实很好听。」然后立刻转移话题聊别的。", correct: false,
+            feedback: "你错过了信号。INFP发这首歌不是来跟你聊音乐的——你回应得太随意，等于告诉Ta'我根本没get到你的暗示'。" },
+          { label: "D", text: "看到消息很激动，但没有立刻回——故意等了几个小时才回复，表现得平静。", correct: false,
+            feedback: "INFP能感觉到你在刻意控制节奏。当你在玩技巧的时候，就已经不是在真诚地回应Ta的情感了。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：Ta的朋友们不太友好",
+        scene: "你们在一个共同朋友的聚会上偶遇了。INFP的好朋友看到你后，故意拉着Ta去了另一边，还瞪了你一眼。你听到Ta朋友小声说：「你确定还要理这个人？」INFP看了看你，表情很复杂。",
+        question: "你怎么办？",
+        options: [
+          { label: "A", text: "没有过去找Ta，也没有对朋友表现出不满。聚会中自然地跟其他人聊天，对INFP保持着尊重的距离。离开前，给Ta发了条消息：「很高兴见到你。」", correct: true,
+            feedback: "你的克制让所有人都感到意外——包括那个瞪你的朋友。你没有制造场面，也没有逼Ta表态，只是安静地表达了'我在这里但没有强迫你'。INFP在朋友面前不需要替你辩护——因为你没有让Ta难堪。这让Ta的朋友也开始动摇了。" },
+          { label: "B", text: "走过去跟那朋友解释：「我是真的变了，你可以问她/他。」", correct: false,
+            feedback: "你在一个公开场合把INFP推到了风口浪尖。Ta被迫要在朋友和你之间表态——而你还没有赢得这种权利。这就是不尊重边界。" },
+          { label: "C", text: "整个聚会都待在INFP附近，试图找机会单独跟Ta说话。", correct: false,
+            feedback: "你的存在让INFP的每一个时刻都变得不自然。Ta要一边应付朋友一边在心里处理你的靠近——你的焦急破坏了本来可以很自然的偶遇。" },
+          { label: "D", text: "看到那个场景后暗自受伤，提前离开了聚会。", correct: false,
+            feedback: "INFP注意到你提前走了——Ta会想'我是不是又让你失望了'。你的退缩让情况变得更复杂，因为现在Ta既要在乎朋友的感受又要在乎你的感受。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：Ta主动约你出来",
+        scene: "这天INFP突然主动给你发消息：「这个周末你有空吗？我想去美术馆看一个展览——一个人去有点孤单。」这是分手以来Ta第一次主动约你。",
+        question: "你怎么安排这个周末？",
+        options: [
+          { label: "A", text: "说「好」，让Ta选时间和碰面地点。看展时不主动提起感情话题——除非Ta先说。但全程专注地和Ta一起看每一幅画。", correct: true,
+            feedback: "你把控制权完全交给了Ta——让Ta决定节奏。看展时你没有把注意力放在'怎么复合'上，而是放在了'和Ta一起体验当下'上。INFP发现和你在一起的时光又变得轻松了——这正是Ta怀念的感觉。" },
+          { label: "B", text: "精心计划了一整天的行程——看展、吃饭、散步。「我来安排，你只需要出现就好。」", correct: false,
+            feedback: "你以为精心安排是你的诚意——但对INFP来说，过度策划就是在夺走主动权。Ta约你不是来参加你导演的一天的——是想自然地看看你们还能不能自然而然地相处。" },
+          { label: "C", text: "看展过程中找了个浪漫的时机，认真地问Ta：「我们是不是可以重新开始了？」", correct: false,
+            feedback: "太早了。INFP主动约你是一个信号，但不是绿灯。在Ta享受和你相处的当下提出复合要求，等于把一次轻松的约会变成了一个需要做决定的场合。Ta会觉得压力山大。" },
+          { label: "D", text: "答应了，但在美术馆碰到一个认识的人时，你跟人介绍说：「这是我……朋友。」", correct: false,
+            feedback: "INFP可能已经不介意这个定义了——但你犹豫的那一下，Ta捕捉到了。你是在保护自己不被拒绝。对INFP来说，你连在别人面前怎么介绍Ta都说不清楚，这说明你自己也没想好。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：旧问题又出现了",
+        scene: "你们关系正在回暖——但今天你犯了一个相同的错误。INFP跟你说了一件让Ta难受的事，你因为在忙，又习惯性地说了句：「别想太多了，没什么大不了的。」说完你就意识到——这是导致分手的那个模式。",
+        question: "你意识到旧病复发了。现在怎么补救？",
+        options: [
+          { label: "A", text: "立刻停下手中的事，直视Ta的眼睛：「我刚才又在犯老毛病了，对不对？你刚才说的是什么——我现在听。」然后真的放下一切。", correct: true,
+            feedback: "你没有假装没发生，也没有找借口。你即时意识到了，即时修正了。INFP本来已经准备失望——但你用实际行动告诉Ta：你不再是以前那个你。这次复发反而成了最好的证明。" },
+          { label: "B", text: "「抱歉我太忙了——你知道我不是那个意思。」然后继续忙。", correct: false,
+            feedback: "INFP会想起分手的那个瞬间——你说过一模一样的话。'不是那个意思'不会让伤害消失，只会证明你没变。" },
+          { label: "C", text: "心虚地沉默了一会儿，然后换了个话题。", correct: false,
+            feedback: "你以为沉默能糊弄过去——但在INFP眼里，这是在假装问题不存在。这恰好是以前的那个你。" },
+          { label: "D", text: "过了一会儿发了一条长消息道歉。", correct: false,
+            feedback: "当下无视，事后补救——这是INFP最熟悉的伤害模式。文字再好也补不回你刚才那个不在乎的当下。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：Ta提起了分手那天",
+        scene: "一天晚上，INFP翻出了你们分手时Ta写的那首诗。出乎意料地，Ta把它发给了你，说：「我一度恨过这首诗，因为它提醒我你是怎么伤害我的。但现在——我觉得我可以跟你一起读了。」",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "认真读完每一行，然后说：「这里面有些句子，现在读还是会痛——但不是你的错，是我让它变成这样的。谢谢你愿意把它分享给我。」", correct: true,
+            feedback: "你承认了诗中的痛——没有逃避、没有解释、没有说'现在不是好了吗'。你只是安静地和Ta一起面对了那段黑暗。INFP会在这之后做一个重要的决定——相信你是真的懂。" },
+          { label: "B", text: "快速浏览了一下，说：「写得真好。不过现在不是都过去了吗？我们往前看。」", correct: false,
+            feedback: "你回避了诗里的痛苦。INFP不是要你欣赏文学——是要你看到Ta曾经的伤痛。说'都过去了'等于在否决这份痛苦的重量。" },
+          { label: "C", text: "看到那些尖锐的句子后，说：「我当时真的那么差劲吗？」", correct: false,
+            feedback: "你又把焦点拉回了自己。INFP分享创伤的时候，你关心的是自己的形象——这恰好是问题的根源。" },
+          { label: "D", text: "读完后什么也没说，只是握住了Ta的手。", correct: false,
+            feedback: "方向对了——但还不够。这首诗里是Ta最深的伤口，一个沉默的握手不足以回应Ta冒着被再次伤害的风险分享给你的勇气。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta在犹豫——怕再次受伤",
+        scene: "你们的关系已经接近复合了。但这一天，INFP突然说：「我不是不信任你。我是不信任自己——我怕我太想相信你，所以看不清你是不是真的变了。你能理解吗？」",
+        question: "这是一个非常重要的考验。你的回应是？",
+        options: [
+          { label: "A", text: "「我理解。你不用现在就相信我——时间会替你检验。我会一直在，直到你不再需要怀疑。」", correct: true,
+            feedback: "你没有急着表白，也没有催Ta做决定。你把选择权和节奏都交还给了Ta，还给了Ta一个重要的保证：路有多长你就走多远。INFP的眼中泛起了泪——不是因为悲伤，是因为放心。" },
+          { label: "B", text: "「我已经变了，你还看不出来吗？我给你看了那么多证据。」", correct: false,
+            feedback: "要求被信任的感觉和以前一模一样。INFP的犹豫恰恰不是因为没看到改变——是因为看到了，但需要确认这是真的。" },
+          { label: "C", text: "「那你需要多长时间？给我一个大概的时间。」", correct: false,
+            feedback: "你要求一个时间表——这本来就是伤害的来源之一。INFP的情感不按时间表运作。你这句话让Ta重新感到压力。" },
+          { label: "D", text: "「如果你不相信我，我做什么都没用。」然后不再解释。", correct: false,
+            feedback: "你在赌气。INFP把最深的恐惧告诉你，你却用'那就算了吧'来回应。这是对脆弱的残酷回应。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：Ta问你能不能见见Ta的朋友",
+        scene: "INFP说：「我想让你再见一次我那些朋友——上次他们对你的态度你也看到了。这次……我希望你能以一个全新的样子见他们。」",
+        question: "你准备好了吗？你该怎么做？",
+        options: [
+          { label: "A", text: "「好。我跟他们不需要成为好朋友——但我希望他们能看到，你是被认真对待的。别的我不需要证明。」", correct: true,
+            feedback: "你没有说要取悦朋友，也没有说要证明自己多好。你把重点放在了'让Ta的朋友看到Ta被善待'上——这个角度让INFP确信，你真正理解了什么是为Ta着想。" },
+          { label: "B", text: "「没问题！交给我，我会让他们对我改观的。」", correct: false,
+            feedback: "你又把焦点放在了自己身上——'我怎么表现得体'。INFP需要的不是你征服所有人，而是你发自内心地尊重Ta在乎的人。" },
+          { label: "C", text: "「他们上次那样对我……说实话我挺委屈的。但为了你我愿意去。」", correct: false,
+            feedback: "你把上一次放在了心上，并且用委屈绑架了Ta的心意。INFP听出来了——你不是为了Ta去的，是为了'赢'去的。" },
+          { label: "D", text: "「可以不去吗？我觉得这是我们两个人的事。」", correct: false,
+            feedback: "拒绝见朋友的请求，等于拒绝进入INFP世界的一部分。这一次，不是Ta的朋友不接纳你——是你自己选择了不进入。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「你为什么回来」",
+        scene: "复合后的一个安静夜晚。INFP靠在你肩膀上，手指轻轻捏着你的衣角。犹豫了很久，终于开口：「我知道你做了很多——但我还是想问。你回来……是因为不习惯没有我，还是因为你真的想清楚了？」",
+        question: "这是INFP最后的迟疑——你需要一个回答，一个不带任何掩饰的答案。",
+        options: [
+          { label: "A", text: "「都有。不习惯是事实——你的缺席让我的生活变得安静得很不自然。但我回来不是因为这个。我回来是因为你让我看到了自己原来有多不愿意走进别人的世界——而你的世界是我最想进的。我不想因为自己不够好而错过你。」", correct: true,
+            feedback: "你承认了动机的复杂性——不全是纯粹的爱，也不全是孤独。但你知道自己为什么回来。INFP听到后半段时，眼泪终于掉了下来。不是因为难过——是因为有人正视了自己全部的缺陷，却仍然选择了Ta。这个时刻，Ta终于可以停止怀疑了。" },
+          { label: "B", text: "「当然是想清楚了！不然我花这么多时间精力干嘛。」", correct: false,
+            feedback: "你用付出的辛苦来证明真心的质量——但INFP听到的是不耐烦。你在暗示你做了这么多已经够了，这个问题不应该再被问。" },
+          { label: "C", text: "「我也不知道具体原因。只知道没有你，什么事都不对。」", correct: false,
+            feedback: "诚实但不够。INFP问这个问题不是要一个精准答案——是要你证明你认真地想过。'说不清'等于没想。" },
+          { label: "D", text: "「你怎么又问这个……我现在不是在你身边吗？这不就是最好的证明。」", correct: false,
+            feedback: "你在用'结果'来否定'过程'。INFP需要的是知道你内心走过的路——你在身边的这个事实不能替代你对这个问题的思考。" }
+        ]
+      }
+    ]
+  },
+
+  // ==================== 挽回 ENFP ====================
+  {
+    id: 'enfp-winback',
+    category: 'winback',
+    name: '挽回 ENFP',
+    fullName: '竞选者',
+    emoji: '🦄💔',
+    theme: { primary: '#e8913a', accent: '#f4a261', gold: '#e9c46a' },
+    description: '你们分手了。你说过一句"你能不能稳定一点"，踩中了ENFP最深的恐惧。Ta带着受伤的自由灵魂消失了，你还能追回来吗？',
+    tags: ['复合', '挽回', '自由'],
+    winQuotes: [
+      '「我本来以为自己不会再相信任何人了——但你回来的时候，没问我能给你什么保证，只问我"你想去哪里"。那个瞬间我知道，我们之间自由和爱可以并存。」'
+    ],
+    loseMsg: 'ENFP不会因为害怕孤独而回头。但如果你真的懂了自由和爱的平衡——下一次就不会错过。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：你们分手了",
+        scene: "分手三周了。分手那天你说「你能不能靠谱一点，我受够了你的情绪化和变来变去」。ENFP没有吵，只是安静地说了句「你说得对，我不够好」，然后消失在所有人的视线中。今天你刷到Ta的朋友圈——Ta一个人去了大理，配文是「重新出发」。",
+        question: "你想要联系Ta。第一句话说什么？",
+        options: [
+          { label: "A", text: "「大理的阳光很好。希望你可以在那里找到让自己快乐的东西。不用回我。」", correct: true,
+            feedback: "ENFP看到了。你没有说想Ta，没有求复合，没有问归期。你只是祝福了Ta的自由——而自由恰好是Ta离开的原因。Ta把这条消息看了三遍。" },
+          { label: "B", text: "「你去大理都不跟我说一声？我们虽然分手了但至少还能做朋友吧。」", correct: false,
+            feedback: "你又在要求Ta向你汇报。分手前你要Ta稳定，分手后你要Ta汇报——ENFP觉得你永远不会懂什么叫做给空间。" },
+          { label: "C", text: "「一个人旅行注意安全。需要聊天的时候我随时在。」", correct: false,
+            feedback: "听起来体贴，但'随时在'对此刻的ENFP来说是压力。Ta离开就是为了摆脱你的期待——你这句话在说'我还在等你'。" },
+          { label: "D", text: "「等你回来我们见一面好吗？我想跟你说几句话。」", correct: false,
+            feedback: "ENFP的旅行是因为受伤了需要呼吸。你连这个空间都要提前缩小到'回来见一面'。Ta会直接忽略这条消息。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta回了——但很疏远",
+        scene: "Ta隔了好几天才回：「谢谢。大理很美。」六个字，礼貌但疏离。以前的Ta会连发二十条消息跟你分享每一个细节——现在只剩下六个字。",
+        question: "你怎么回？",
+        options: [
+          { label: "A", text: "「那就好。好好享受。」没有再追问，也没有延伸话题。", correct: true,
+            feedback: "ENFP愣了一下——你居然没有追问。你尊重了Ta简短的回复，没有要求更多。这个'不要求'的态度太陌生了——陌生到让Ta开始好奇。" },
+          { label: "B", text: "「有多美啊？拍了什么照片分享一下呗！」", correct: false,
+            feedback: "六个字变成你索要旅行的证据。ENFP不想分享——至少不是现在，不是跟你。你的热情在Ta看来是一种不理解当下的气氛。" },
+          { label: "C", text: "「看到你开心我就放心了。我这段时间过得不太好。」", correct: false,
+            feedback: "你用祝福当幌子，马上又把自己的情绪甩给了Ta。ENFP会翻白眼——你还是老样子，所有话题最后都会回到你。" },
+          { label: "D", text: "没有回复，想等Ta再说点什么。但Ta再也没有说话。", correct: false,
+            feedback: "沉默被ENFP解读为冷暴力。Ta给了六个字，你不回——在Ta眼里这比吵架更让Ta确认'我们不合适'。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：Ta主动联系你了",
+        scene: "又过了一周。ENFP突然给你发了一个链接——一个超冷门的独立电影，正是你以前推荐过但Ta一直没看的那部。附言：「今天无意中看了这个，真的很棒耶！」这是分手后第一次，Ta主动发起对话。",
+        question: "这个信号很重要——你怎么回应？",
+        options: [
+          { label: "A", text: "「哈哈你终于看了！！最触动你的是哪一段？」然后开心地聊电影，没有借此切入感情。", correct: true,
+            feedback: "ENFP最怕的就是浪漫被利用。你投入地聊了电影本身，没有趁机把话题变成挽回的契机——这让Ta感到久违的轻松：原来跟你聊天还可以这么简单。" },
+          { label: "B", text: "「这部电影是我推荐给你的——你还记得。你是不是想我了？」", correct: false,
+            feedback: "ENFP发这个link本身就是一个冒险——Ta在试探和你连接的感受还是不是好的。你一步把试探变成了逼问，Ta以后不会再做这种试探了。" },
+          { label: "C", text: "无视了电影话题，问：「你回大理了吗？我们都好久没见了。」", correct: false,
+            feedback: "ENFP来跟你分享一个具体的快乐——你直接略过了。在Ta的世界里，忽略分享=忽略Ta本人。这是你们分手原因的直接重现。" },
+          { label: "D", text: "礼貌地聊了几句电影，但明显不如以前热情——不想显得太急切。", correct: false,
+            feedback: "ENFP能感觉到你在压抑。你的克制让本应自然的对话变得像在走钢丝——ENFP会累，然后慢慢失去分享的兴趣。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta说出了离开的真正原因",
+        scene: "你们渐渐恢复了聊天。有一天晚上ENFP突然说：「你知道吗，分手前那阵子，每次我看到你的消息我都要先深吸一口气。不是因为不爱你——是因为我不知道今天你又会对我的什么不满意。我每一天都在紧张。」",
+        question: "这让你的心沉了下去。你怎么回应？",
+        options: [
+          { label: "A", text: "「对不起。我从没想过我的期待会让你不能呼吸。这不是你的问题——是我以为爱一个人就要帮Ta变好，却忘了好不由我来定义。」", correct: true,
+            feedback: "ENFP愣住了。你不仅承认了，还把问题定位得很准——'好不由我来定义'。这句话直击了你们分手的原因。ENFP第一次觉得——你不是来要求Ta改变，是来道歉的。" },
+          { label: "B", text: "「你为什么不能当时告诉我？你要说出来我才能知道啊。」", correct: false,
+            feedback: "虽然疑问是合理的，但时机错了。ENFP现在分享的是一个伤口，不是一个待解决的问题。你的反问让Ta觉得——你又在把责任推给Ta的沉默。" },
+          { label: "C", text: "「我知道我管得太多了。但我都是因为在乎你才那样的。」", correct: false,
+            feedback: "你在认错的同时给错误找了一个甜蜜的借口——'因为在乎'。ENFP听出来了——你还是在合理化而不是在道歉。" },
+          { label: "D", text: "「那你现在还紧张吗？」", correct: false,
+            feedback: "你跳过了原因直接问结果——急于知道自己的挽回有没有效果。ENFP会觉得你更关心进度条，而不是Ta的感受。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：Ta的同时五个新计划",
+        scene: "ENFP恢复了往日的活力——告诉你在学陶艺、健身、还报了潜水证。然后兴致勃勃地给你发了一堆正在做的作品的照片。你说了一句「哇你同时做好多事！」然后突然意识到——这就是你以前会批评的模式。",
+        question: "你会怎么继续说下去？",
+        options: [
+          { label: "A", text: "「陶艺这个纹理好特别——你是怎么做到的？还有潜水——你在水里会觉得害怕吗？」真诚地好奇每一个项目。", correct: true,
+            feedback: "你没有评价'多线操作'好不好——只是进入了Ta的每一个世界，一个一个地好奇。ENFP感受到了久违的'被欣赏'——不附带任何'但是'。" },
+          { label: "B", text: "「你真的很厉害！不过这么多同时进行不会累吗？」", correct: false,
+            feedback: "前半句像夸奖，后半句在质疑。那个'不过'就是你以前的样子——ENFP听到这个转折会本能地关闭分享欲。" },
+          { label: "C", text: "「你每次都这样'全方位开花'。还记得上次尤克里里的事吗？」", correct: false,
+            feedback: "你在翻旧账——而且是Ta过去被你批评的伤疤。ENFP分享这些不是来接受历史检验的，是来寻找现在的连接。" },
+          { label: "D", text: "「挺好的。我自己最近没什么特别的。」然后不再追问。", correct: false,
+            feedback: "ENFP需要的是共鸣而非冷漠。你平淡地回应让Ta觉得——你仍然不觉得Ta的世界有趣。分享欲再次熄灭。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：Ta取消了计划",
+        scene: "ENFP约了你周末去一个集市——你答应了。但周六凌晨一点，Ta突然发消息：「对不起！我刚刚发现一个更好的地方——我们不去集市了，去一个很酷的地下爵士酒吧吧！」你看着自己被Ta打乱的安排——曾经，这会让你生气。",
+        question: "你怎么办？",
+        options: [
+          { label: "A", text: "「哈哈哈哈你的即兴能力真的是一绝。没问题，爵士酒吧我也想去。不过下次换我选地方——不许改！😏」", correct: true,
+            feedback: "你接纳了Ta的即兴——没有抱怨，没有说'我本来安排好时间了'。但你也温柔地划了一下边界。ENFP在屏幕那边欢呼了起来——'YES！！这个人不一样了！！'" },
+          { label: "B", text: "「我准备好了周五的计划……算了，随你吧。」", correct: false,
+            feedback: "你在用'算了'来表现大度——但ENFP能听到前面的抱怨。这种'委曲求全'不会让Ta更舒服，只会让Ta在爵士酒吧里一直想着'他是不是真的不高兴'。" },
+          { label: "C", text: "「不行——你答应的是集市，我们就去集市。这是原则。」", correct: false,
+            feedback: "你把一次即兴变成了原则问题——这就是ENFP离开的原因。Ta不是不守信用，是Ta的热情把你放在了可以共享惊喜的位置上。你用规则拒绝了惊喜。" },
+          { label: "D", text: "虽然嘴上说好，但到了酒吧全程都提不起兴趣。", correct: false,
+            feedback: "嘴上同意心里委屈——ENFP能从你身体的每一个细节里读出不快乐。你的沉默比直接说'不'更让Ta难受——因为这意味着你还没有学会真实地表达需求。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：Ta的情绪又跌到谷底",
+        scene: "ENFP今天突然变得很安静。白天还兴高采烈地发了三条朋友圈，晚上却给你发了句：「今天突然觉得什么都没有意义了。不是心情不好，就是有一种很空洞的感觉。」以前的你会劝Ta'别想那么多'——但你现在不是以前的你了。",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「我听到了。空洞的感觉很难受——好像站在悬崖边。要是你想说点什么，我在这。要是你什么都不想说，我也在这。」", correct: true,
+            feedback: "你没有说'会好的'，没有说'转移注意'，没有说任何让Ta感觉被push的话。你只是在Ta的空洞里安安静静地坐了下来。ENFP觉得自己被看见了——不是看见了开心，而是看见了灵魂的暗面。" },
+          { label: "B", text: "「你今天白天不是还挺开心的吗？发生了什么事？」", correct: false,
+            feedback: "你把情绪变化当成了需要解释的问题。ENFP的情绪起伏不是bug——不需要一个'原因'或'解决方案'。你的追问让Ta觉得多变是一种需要被管理的东西。" },
+          { label: "C", text: "「我懂！我也有这种感觉的时候——上个月我就……」", correct: false,
+            feedback: "Ta在跟你说深渊，你却在说自己的阴天。你把Ta的感受当成比较的对象——ENFP需要的不是你的故事，是你的空椅子。" },
+          { label: "D", text: "「别想太多了，我陪你看个搞笑视频吧。」", correct: false,
+            feedback: "'别想太多'曾经是你让ENFP最受伤的四个字。你在用快乐去掩盖伤口——而当ENFP最难过的恰是这个——你不能接受Ta有不快乐的样子。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：你说错话了",
+        scene: "你们的关系持续回暖。但在一次聊天中，ENFP又开始兴致勃勃地分享一个新的创业想法，你不小心条件反射地说了一句：「你是不是又一时冲动了？」话一出口你就看到Ta的表情僵了——然后迅速调整回笑容：「没有啦，就是随便想想。」",
+        question: "你知道旧模式又出现了。你怎么补救？",
+        options: [
+          { label: "A", text: "马上放轻语气：「我收回——我刚才根本没问你细节就下结论了。你先重新讲讲——这次我保证会认真听完。」然后身体前倾，放下手机。", correct: true,
+            feedback: "你没有纠结刚才的失言，而是立刻创造了一个新的moment。ENFP看到你眼神变了——那种全神贯注，那种'我真的很想知道你在想什么'的专注。Ta嘴上的笑容渐渐变成了眼睛里的笑容。" },
+          { label: "B", text: "「抱歉。我是开玩笑的。」然后若无其事地转移话题。", correct: false,
+            feedback: "刚才的话不是玩笑，ENFP知道。你用'玩笑'来模糊伤害——这是第二次伤害。第一次是不信任Ta的决定，第二次是不承认伤害。" },
+          { label: "C", text: "「对不起，我只是担心你。我怕你又像上次那样花了很多钱最后放弃了。」", correct: false,
+            feedback: "你的道歉附加了一个'我说了伤人的话，但我是为你好'的理由。ENFP不需要你为伤人的话找合理性。" },
+          { label: "D", text: "沉默了很久，然后换了个话题——不知道该怎么面对刚才那句话。", correct: false,
+            feedback: "你不敢面对——在ENFP眼中，这和以前一模一样。当伤口出现时你选择绕过而不是处理。Ta会想——你真的改了吗？还是只改在了平静的时候？" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：你们彻夜聊天",
+        scene: "ENFP约你出来看夜景。你们坐在江边，从午夜一直聊到天蒙蒙亮——聊过去的趣事、聊各自最近发现的音乐、聊对某些社会事件的看法。聊着聊着ENFP突然安静了：「这是分手后……我最开心的一次聊天。」然后看着你，没说完。",
+        question: "你知道这是一个重要的瞬间——你该说什么？",
+        options: [
+          { label: "A", text: "「对我来说也是。不是因为聊了什么——是因为跟你聊天又重新变得像跟自己聊天一样自然了。我最近在学这件事：享受当下，不急着知道明天会怎样。」", correct: true,
+            feedback: "ENFP的眼眶有一点湿润。你说出了Ta最在意的——不是内容的质量，是陪伴的质量。而且你说了'不着急'——这曾是Ta最希望你学会的事。天快亮了，但ENFP觉得你们的天也快亮了。" },
+          { label: "B", text: "「是啊——你看，其实我们还是很合得来的，对吧？」", correct: false,
+            feedback: "你又在寻求验证。ENFP注意到你立刻从'享受当下'切换到了'确认关系'模式。这种压力Ta太熟悉了。" },
+          { label: "C", text: "「那……我们是不是可以再试一次？」", correct: false,
+            feedback: "你把一个自然流动的夜晚变成了谈判现场。ENFP立刻警觉起来——刚才的美好瞬间被确认关系的压力覆盖了。" },
+          { label: "D", text: "害羞地笑了笑，没说话——不知道现在是什么关系，不敢越界。", correct: false,
+            feedback: "你的沉默不是边界——是不敢。当ENFP主动表达了感情，你却不敢接住。这种不对等会让ENFP觉得你还没准备好。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta测试你",
+        scene: "ENFP给你发了一张图片——是另一个城市的画展海报，在300公里外。附言：「这周我想开车去看这个展。要不要一起去？」这明显是一个测试：你以前绝不会为这种'一时兴起'花一整天。",
+        question: "面对这个明显的测试——你怎么回应？",
+        options: [
+          { label: "A", text: "「好。我调一下工作时间。不过路上音乐我来选。公平起见，一半你选，一半我选。」", correct: true,
+            feedback: "你说了好——毫不犹豫。你甚至加了自己的条件——让这次旅行变成一次'合作'而非'配合'。ENFP内心在想：他说好——而且是带着自己进去的。这不是在妥协，这是在共建。Ta的测试有了一个最理想的答案。" },
+          { label: "B", text: "「300公里？太远了。我帮你看看有没有本地的展。」", correct: false,
+            feedback: "你用实用性扼杀了浪漫。ENFP设这个测试就是想看你会不会为了好奇心和热情打破常规——你说远，恰恰告诉你没有。" },
+          { label: "C", text: "「你知道这来回要多久吗？你算过时间成本吗？」", correct: false,
+            feedback: "你在算效率——ENFP在算热爱。这是两种根本无法对接的坐标系。Ta觉得自己和你的世界观还是隔着一道墙。" },
+          { label: "D", text: "嘴上答应了但一直念叨路程太远、会不会累。", correct: false,
+            feedback: "答应了却带着不情愿——ENFP宁愿你直接说'不'。因为你的勉强会在整个旅程中变成一种低气压，比不去更折磨。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：Ta的朋友不看好",
+        scene: "ENFP的朋友圈里有人直言：「你确定要跟他/她复合？你忘了他/她以前怎么管你的？」ENFP把这些话告诉了你——不是来要你证明，是来观察你怎么反应。",
+        question: "你的反应是？",
+        options: [
+          { label: "A", text: "「你朋友说得有道理——如果我是他们，我也会这么想。我不需要他们立刻接纳我。你慢慢看——时间长了他们会看到的。」", correct: true,
+            feedback: "你没有陷入'证明自己'的漩涡——你承认朋友的担忧是正当的。这不是软弱，这是成熟。ENFP安心了——你不用讨好全世界，你只需要理解为什么别人不信任你。" },
+          { label: "B", text: "「他们根本不了解现在的我，凭什么下判断？」", correct: false,
+            feedback: "防御模式会让ENFP夹在你和朋友之间。Ta不会喜欢你跟朋友对立——ENFP同时在乎这两边，你攻击一边等于攻击Ta的一部分。" },
+          { label: "C", text: "「那你去跟他们解释啊——告诉他们我变了。」", correct: false,
+            feedback: "你把责任推给了ENFP——让Ta替你做公关。这恰恰是以前的模式：你制造问题，Ta来收拾。" },
+          { label: "D", text: "「好吧，那我们暂时不要公开复合，等他们接受了再说。」", correct: false,
+            feedback: "你可能以为这是体贴——但ENFP听到的是'我们要偷偷摸摸'。ENFP不想公开一段需要遮掩的关系——这对Ta来说是一种倒退。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「你真的不会再想改变我吗」",
+        scene: "复合后的某一天——ENFP一如往常地兴奋地宣布Ta的下一个计划。然后突然停下来，有点犹豫地问：「我问你一个问题。你真的——能接受我永远是这样的一个人吗？不稳定的、情绪起伏的、今天想做这个明天想做那个。不是改一阵子——是永远。」",
+        question: "这是Ta最后的恐惧。你怎么回答？",
+        options: [
+          { label: "A", text: "「我不只是接受——我选择这样的你。你的不稳定不是缺陷，是你一直活在自己心里。我今天就是要告诉你：我不会再试图驯服你——我是来跟你一起奔跑的。」", correct: true,
+            feedback: "ENFP安静了很久——完全不是Ta的风格。然后Ta笑了——那种真正的、眼睛里有光的笑。你用了'一起奔跑'——这正是ENFP最想听到的词汇。不是追逐、不是掌控、不是被落下——是并排跑在同一个方向。这一次，自由和爱没有冲突。" },
+          { label: "B", text: "「没关系啊，反正我都适应了。只要你开心就好了。」", correct: false,
+            feedback: "'适应'不等于'接纳'。ENFP听出了你在妥协——而这种妥协总有一天会变成怨气。Ta问的是'能不能接受'，你答的是'可以忍受'。" },
+          { label: "C", text: "「我觉得你其实可以慢慢稳定下来的，只是需要时间。」", correct: false,
+            feedback: "你把问题重新定位为'可以改正的'——ENFP立刻明白了：你还是觉得现在是临时的。你在等Ta变好——可Ta已经是最好的自己了。这是最致命的回答。" },
+          { label: "D", text: "「我不在乎你稳定不稳定——我爱你这个人就行。」", correct: false,
+            feedback: "ENFP听到'不在乎'三个字——你否定了一个Ta花了最多时间去维持的东西。不稳定是Ta的构成，你说不在意等于说没看到。" }
+        ]
+      }
+    ]
+  },
+
+  // ==================== 挽回 INFJ ====================
+  {
+    id: 'infj-winback',
+    category: 'winback',
+    name: '挽回 INFJ',
+    fullName: '提倡者',
+    emoji: '🌙💔',
+    theme: { primary: '#4a6fa5', accent: '#7eb8da', gold: '#c9a96e' },
+    description: '你们分手了。你触碰了INFJ不可妥协的底线，Ta关上了那扇门。INFJ的关门声很轻——但门后是永远。这一次，你还能找到那把钥匙吗？',
+    tags: ['复合', '挽回', '信任'],
+    winQuotes: [
+      '「我曾经发誓不会再为你开门。但你敲门的方式变了——不是砸门，不是求饶，只是轻轻敲了三下，然后对我说："我知道你害怕。我不急。"那个瞬间我拉开了一条缝。」'
+    ],
+    loseMsg: 'INFJ的门不是不可以再打开——但需要的不只是时间，还有真正的自省。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：你们分手了——Ta关了门",
+        scene: "分手已经一个月了。分手那天INFJ没有哭、没有吵、没有说狠话。Ta只是看了你一眼，说了句「我们到此为止」，然后走了。消息不回、电话不接——你终于理解了什么是传说中的INFJ's doorslam。你被关在门外了。",
+        question: "你该从哪一步开始？",
+        options: [
+          { label: "A", text: "写一封邮件——不催、不求、不解释。只说你理解自己为什么被关在门外，以及你正在做什么来面对自己。", correct: true,
+            feedback: "INFJ看到了邮件。你用了'邮件'而不是微信——说明你认真了。你没有用任何情绪绑架Ta，只是陈述了理解。Ta没有回——但把这封邮件存在了一个文件夹里。这是一个开始。" },
+          { label: "B", text: "每天发一条消息报备自己的改变——让Ta看到你在努力。", correct: false,
+            feedback: "INFJ关门的瞬间就已经不需要你的报备了。每天发消息不会让Ta觉得你在改变——只会让Ta觉得你在试图绕过那扇门而不是等待门自己打开。" },
+          { label: "C", text: "找Ta的朋友帮忙传话。", correct: false,
+            feedback: "你在用第三方打穿Ta的墙——这是最糟糕的方式。INFJ会觉得你在侵犯Ta的边界，而且把Ta的朋友也卷入了你们的问题。" },
+          { label: "D", text: "等。什么也不做——时间会解决一切。", correct: false,
+            feedback: "INFJ不需要时间——需要证据。如果你只是等，Ta只会把这扇门锁得越来越死，因为你什么都没做来证明Ta关门的理由是错的。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta给了你三分钟",
+        scene: "你发了一封邮件后，隔了很久——INFJ回复了。只有一行字：「你有三分钟的陈述时间。建议你用心阐述。」",
+        question: "这封回复邮件你怎么写？",
+        options: [
+          { label: "A", text: "三句话。第一句认错（具体到哪个行为），第二句这个行为背后的模式是什么，第三句你在做什么来改变这个模式。不超100字。", correct: true,
+            feedback: "INFJ看到了邮件的长度——就三句话。你精准、简洁、没有情绪垃圾。Ta轻轻抿了一下嘴——这是INFJ表示'值得再看一眼'的表情。" },
+          { label: "B", text: "写了一大段——从你的童年创伤开始，解释你为什么犯了那些错误。", correct: false,
+            feedback: "你在用一个很长的故事包装错误。INFJ不需要你的心理分析——Ta需要你清楚你的错以及对Ta的后果。用长篇大论消耗宝贵的三分钟=你没听懂规则。" },
+          { label: "C", text: "「我不知道从哪里开始。我想告诉你的是——没有你，我发现我的生活已经失去了光。」", correct: false,
+            feedback: "浪漫在INFJ这里是加分项，但前提是基础分已经及格。你现在在回避核心问题——Ta问的是你理解了什么，你答的是你缺失了什么。" },
+          { label: "D", text: "把你做过的所有错事列了一份清单，然后每条下面写了改进措施。", correct: false,
+            feedback: "太像是在面试了。INFJ收到一份'错题本'会觉得你在表演反思——真正的理解不是列表的长度，是精准度。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：你们坐下来面对面了",
+        scene: "三分钟邮件通过后，INFJ同意跟你见面。在一个很安静的公园长椅上。Ta从头到尾没有看你——看着远处的湖。你说完第一轮后，Ta终于开口了：「你知道我最不能接受的是什么吗？不是那次你骗我，是你骗完之后还在保护自己——你没有一丝真正的愧疚。」",
+        question: "你怎么面对这句话？",
+        options: [
+          { label: "A", text: "「你说得对。我保护自己的时间太久，久到忘了你的感受才是重点。我不要找借口了——我只想听你把你想说的都说完。」", correct: true,
+            feedback: "INFJ终于转过头看了你一眼。你放下了盾——这是一个INFJ能直觉感受到的事情。Ta沉默了很久，不是因为不想说——是因为太久没有人愿意听了。" },
+          { label: "B", text: "「那次我确实不对。但当时的情况很复杂——你可能不太了解全部的来龙去脉……」", correct: false,
+            feedback: "INFJ在告诉你伤害最深的一点——你就立刻开始解释背景。解释=你还没真的觉得自己全责。Ta重新转回去看湖了——你失去了这一次的眼神。" },
+          { label: "C", text: "「我被误解了——我没有不愧疚，只是我不知道该怎么表达。」", correct: false,
+            feedback: "你说'我被误解了'——等于在说错的是Ta的理解方式。这在INFJ面前行不通。" },
+          { label: "D", text: "默默流泪——希望Ta能感受到你的痛苦。", correct: false,
+            feedback: "INFJ是直觉大师——Ta知道眼泪有真有假。你的泪水不能代替道歉——如果Ta感觉不到背后的真心，眼泪反而会让Ta觉得你在用情绪操控。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta开始说出真正的伤害",
+        scene: "经过几次交谈，INFJ开始敞开心扉：「我帮你解决你所有的问题——你情绪低落的时候我放下一切去陪你，你迷茫的时候我花了多少个晚上帮你理思路。但你呢？你每次都把我的付出当成理所当然，就像一阵刮过的风——你知道有，但从不觉得需要回应。」",
+        question: "面对这份长久的委屈——你怎么回应？",
+        options: [
+          { label: "A", text: "「对。我不但没回应，我甚至没觉得需要回应——这才是最伤人的。你的付出不是风——是我不想承担感激的重量。我很抱歉让你一个人撑了这么久。」", correct: true,
+            feedback: "INFJ的呼吸变重了一下——你精确地说出了那个隐秘的心理：不想承担感激的重量。这正是INFJ付出型气质最害怕的东西——不是没被感谢，是被当成了理所当然的背景。" },
+          { label: "B", text: "「以后换我来照顾你，我会补偿回来的。」", correct: false,
+            feedback: "这句话太轻了——它不是没有诚意，是没有深度。INFJ听到的是商业用语——'补偿'。Ta不需要你变成照顾者——Ta需要你理解为什么你一直在享用而没有回报。" },
+          { label: "C", text: "解释说你那时候有很多压力，不是故意忽视Ta的付出。", correct: false,
+            feedback: "'压力'是你个人的事——INFJ的付出是另一个人的事。你不能用你的压力来抵消对另一个人的伤害。" },
+          { label: "D", text: "「你说得我都好难受——我没想到你承受了这么多。」", correct: false,
+            feedback: "你又在把感受转到自己身上。INFJ在说自己的痛——你立刻说'听了好难受'。Ta的出口变成了你的入口。这个模式会让INFJ觉得——跟你说话永远绕不开你的感受。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：你看到了Ta的脆弱",
+        scene: "有一次在Ta家，你看到了一本翻开的日记——不是故意偷看的，它就摊在桌上。你的名字出现了好几次。还有一些没写完的句子——开头都是「如果他能……」，但都没有写完。你意识到你闯进了Ta最私密的空间。",
+        question: "你怎么面对这个发现？",
+        options: [
+          { label: "A", text: "合上日记，放到原处。等Ta回来时说：「你的日记在桌子上——我没有读，但我看到它摊开着。如果你想聊里面的事，我准备好了。如果不想——我永远不会提。」", correct: true,
+            feedback: "INFJ深深地看了你一眼——不是愤怒，是意外。你是第一个看到那个日记却没有翻的人。你给出了最高级别的尊重——告知、表达意愿、但不越界。这是INFJ会记一辈子的时刻。" },
+          { label: "B", text: "偷偷读了几页——然后知道了问题所在，默默开始按照日记里写的去改正。", correct: false,
+            feedback: "无论你的意图多好——你偷看了。INFJ知道后会极度痛苦——Ta最私密的空间被信任的人侵犯了。你按照日记去改的行为反而会让Ta觉得被监视。" },
+          { label: "C", text: "没有提日记的事——但后来有意无意地引用日记里的细节来证明你懂Ta。", correct: false,
+            feedback: "INFJ会立刻意识到你看了。那种被入侵的感觉会让Ta所有的防线重新拉起来——而且比之前更高。" },
+          { label: "D", text: "告诉Ta你看到了日记并一字不落地读完——觉得'完全坦白'是最尊重的方式。", correct: false,
+            feedback: "坦白的意愿是好的——但你做了不可逆的伤害。你坦白之前已经做了一个选择：读它。这个选择本身已经说明了一切。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：有人在Ta面前诋毁你",
+        scene: "INFJ的一个朋友对Ta说了一些关于你的负面评价（有真有假）。INFJ告诉你这件事，然后问：「你觉得我应该怎么回应？」这是一个测试——看你是在乎自己还是在乎Ta。",
+        question: "你的回答是？",
+        options: [
+          { label: "A", text: "「建议你可以不回应。为我的话会给你的朋友关系带来压力——这没必要。与其解释你不确定的，不如让时间来验证——你看起来就好。」", correct: true,
+            feedback: "INFJ微微笑了一下——不是因为你的建议，是因为你没有急着为自己辩护。你把Ta放在第一位——不是把'我是好人'放在第一位。" },
+          { label: "B", text: "「告诉我那个人是谁——我要跟他说清楚。这是对我人格的侮辱。」", correct: false,
+            feedback: "INFJ看到的你的反应速度——三秒就从听故事变成了要打仗。你在乎的是自己的名誉，不是Ta的朋友关系。" },
+          { label: "C", text: "「你怎么不替我说话啊？你也在怀疑我吗？」", correct: false,
+            feedback: "你在质疑INFJ的立场——这正是你们分手的原因之一。你把自己的不安全感投射到Ta身上，要求Ta为你的清白出来站台。" },
+          { label: "D", text: "「那些评价有真有假——我承认有些确实是我过去的问题。但我现在……」", correct: false,
+            feedback: "你承认了——但你依然在解释。INFJ不需要你在这一刻做自我分析——Ta就是想知道你放不放得下自己的形象。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：Ta开始信任你了——小小的那种",
+        scene: "INFJ开始主动告诉你一些小事——今天去了哪里，工作上遇到了什么人。有了这些分享，你能感觉那道门在悄悄开着一条缝。但今天，Ta给发了一段很长的语音——描述了一件让Ta不安但其实很小的事。",
+        question: "这是Ta在测试——你会认真听吗？你该怎么回应？",
+        options: [
+          { label: "A", text: "认真听完两遍，然后回：「我听了两遍。你说那个人的那句话让你想了很久——我也在想，如果是我听到那句话，我应该也会不舒服。你想聊聊吗？」", correct: true,
+            feedback: "INFJ默默看着'我听了两遍'这几个字——这是最有力量的信号。你不只是处理了信息，你处理了情感重量。Ta知道——这个人值得我重新打开一点点门。" },
+          { label: "B", text: "「就这点小事？别想太多了——他又不是针对你。」", correct: false,
+            feedback: "你刚刚用'小事'定义了一件对INFJ来说很重要的事——那个门又关上了一寸。" },
+          { label: "C", text: "给了很具体的建议，告诉Ta该怎么处理。", correct: false,
+            feedback: "Ta需要的不是解决方案——是有人确认这不是一件小题大做的事。你跳过了共鸣直接给出建议，让Ta觉得你在逃避情感层面。" },
+          { label: "D", text: "回了句「别担心，你总会处理好的」然后用新话题覆盖。", correct: false,
+            feedback: "你在回避深度。INFJ擅长从你的回避中读出——这人不愿意进入深层。而深层正是INFJ的居住地。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：你面对了你过去的错误",
+        scene: "INFJ翻出了你们最后一次吵架的聊天记录。上面有你发的一句话——尖锐、无情、精准地刺中了Ta最脆弱的地方。那句至今没有一句道歉。Ta把截图发给你：「你还记得这句话吗？」",
+        question: "这可能是最后一道坎——你怎么面对自己最丑陋的一面？",
+        options: [
+          { label: "A", text: "「我记得。我写了这句——当时是为了赢，不是为了解决任何事。我拿你最深的东西当武器，这很残忍。为你为此承受的——对不起。」", correct: true,
+            feedback: "INFJ的手指在屏幕上停住了。你在面对自己最难堪的证据时没有逃避——你承认了武器二字，这说明你真的懂这句话的杀伤力。Ta轻轻吐出一口气——有些东西终于可以放下了。" },
+          { label: "B", text: "「我知道这是气话——人在气头上说的话不算数，你不能一直记着这个吧？」", correct: false,
+            feedback: "你在给暴力的语言降低严重性。在INFJ这里——气头上说的话恰恰揭示了真实的轻视水平。你不是在道歉，是在投诉记性。" },
+          { label: "C", text: "「我完全忘了我说过这么狠的话……天哪。难怪你一直放不下。」", correct: false,
+            feedback: "你忘了——而Ta记了很久。你忘了本身就证明了你根本没觉得有多严重。这种'惊讶'比那句话本身更伤人。" },
+          { label: "D", text: "看到截图后很久没有回复——输了一长串又删了，最后只发了一句「对不起」。", correct: false,
+            feedback: "INFJ需要的是你直接面对——不是在对话框里犹豫。一个字的道歉配不上这句话的杀伤力。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：Ta第一次说'谢谢你'",
+        scene: "你们的关系终于到了一个新的节点。INFJ这天主动约你出来——没有任何理由，就是「想散步」。在江边，Ta忽然对你说：「你知道吗——最近我跟你在一起的时候，我又觉得可以做真实的自己了。不是因为没有压力——是因为你开始明白什么是边界了。谢谢你。」",
+        question: "你怎么回应这句'谢谢你'？",
+        options: [
+          { label: "A", text: "「谢谢你能告诉我——这说明你走了很远的路才到我这里。我很珍惜你今天说的每一个字。」", correct: true,
+            feedback: "你没有把功劳都揽在自己身上。你感谢了Ta走出来——这意味着你承认了这段路最难走的是Ta。INFJ在江风中微微笑了——这是一个终于可以放松的笑容。" },
+          { label: "B", text: "「不客气！我就说我能改的吧。你看——我以前只是没遇到对的方式。」", correct: false,
+            feedback: "你把感激变成了自我暗示和炫耀——INFJ会觉得给了甜头你就开始松懈了。你的注意力从'我们'变成了'我'。" },
+          { label: "C", text: "「其实你早就应该这样告诉我了。如果你之前都会直接说，我们也不会走到分手。」", correct: false,
+            feedback: "你在责怪开始的地方——但这不是时候。Ta今天表达的是感谢，你却给了Ta一个延时批评。这会让Ta重新评估跟你分享的积极感受是否安全。" },
+          { label: "D", text: "害羞地笑了——没有说什么，但眼睛里有光。", correct: false,
+            feedback: "沉默可以是金——但INFJ给了一个明确的感谢。你需要清晰、有份量的回应来表达你理解这个感谢的分量。沉默会让Ta有点空。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：你再次让Ta失望了",
+        scene: "有一天你因为压力很大，又开始回避情绪——INFJ感觉到了。你回应变得冷淡，也不再问Ta的任何问题。这种能量下降正好是你们关系旧模式的开头。Ta在默默观察你的反应。",
+        question: "你要怎么避免重蹈覆辙？",
+        options: [
+          { label: "A", text: "主动在完全崩坏之前说：「我今天状态不太对——感觉很收着。我想先告诉你免得你觉得我又在回避。不是你的问题。」", correct: true,
+            feedback: "你主动了——而不是等Ta来问你。这个被动的INFJ正在观察你是否会主动。你的行为让Ta觉得——不一样了。你会在恶化之前就承担责任。" },
+          { label: "B", text: "跟以前一样——什么也不说。觉得过了就好了。", correct: false,
+            feedback: "INFJ已经看到了这个模式在重复。你不说=你还在依赖Ta来发现问题——这次Ta不会再来提醒你了。Ta会安静地重新评估。" },
+          { label: "C", text: "开始过度补偿——频繁问Ta好不好、有没有什么需要。", correct: false,
+            feedback: "补偿不是修复。INFJ能分清你在试图弥补还是在真诚沟通。你的过度关注反而会让Ta觉得你在用关心来掩盖问题的真正所在。" },
+          { label: "D", text: "给Ta买了一份礼物——用物质代替言语。", correct: false,
+            feedback: "INFJ不需要礼物——需要你开口说话。当你在回避沟通的时候送出物质，Ta会觉得你试图购买不说话的许可。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：你被允许进入Ta的精神世界",
+        scene: "INFJ给你发了一篇自己写了很久但从未发表的散文。文字像透过雾看一个森林——幽深、充满象征、但不太容易理解具体意思。附言：「这篇东西从来没给任何人看过。我不需要评论——我觉得你可以看到它。」",
+        question: "面对Ta最深的精神产物——你怎么回应？",
+        options: [
+          { label: "A", text: "「我看完了。感觉像是——你在用雾去描述雾。真实的世界会要求雾散开，但你在用文字保护它。我被你允许走进这片雾——谢谢你。」", correct: true,
+            feedback: "INFJ的呼吸停了一秒——你用了诗一样的语言去回应Ta的诗。你不是在分析，不是在夸奖——你是在进入。这是INFJ最高的亲密形式：被另一人看到自己的内部风景而不被评判。" },
+          { label: "B", text: "「太深了——可能需要多读两遍才能完全理解。」", correct: false,
+            feedback: "你说要理解——但INFJ说了不需要评论。你的回应在说'我要解读你'——这恰恰是Ta害怕的。" },
+          { label: "C", text: "「换个表达方式可能会更容易懂。」", correct: false,
+            feedback: "你在教INFJ怎么表达自己的内部世界。这不是建设性建议——是对Ta灵魂表达方式的降级。" },
+          { label: "D", text: "不知道写什么——最后回了：「好美。你真有才华。」", correct: false,
+            feedback: "通用赞美在如此私密的分享面前显得极其空洞。Ta给了你看灵魂——你回了一句可以回复任何朋友圈的话。差距太大了。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「这次会不一样吗」",
+        scene: "复合前夕。INFJ看着你——那双眼睛像月光一样柔和但坚定：「我不问你爱不爱我。我只问一件事：如果下一次我又感觉到被忽视、被利用、被当成了理所当然，我能直接跟你说，而你会认真听——而不是进入防御模式。能做到吗？」",
+        question: "这是INFJ最后的条件——不是承诺的爱，是承诺的安全。你怎么回答？",
+        options: [
+          { label: "A", text: "「能。但我还想加一条——如果我觉得自己可能又要进防御模式了，我也会提前告诉你：'我有点想防御了，但我还在这里'。这样你不会需要等到被忽视之后才发现。我不允许你再一个人扛。」", correct: true,
+            feedback: "INFJ安静了很久——不是因为不确定，是因为被满足了。你不仅答应了条件，还在安全协议上加了一层双向机制。你不再是被动方——你主动承诺会发出预警。这对INFJ来说是从来不敢要求的——有人不仅愿意听你，还愿意在出事之前就告诉你。Ta的眼泪掉了下来——但这一次，是放心的眼泪。" },
+          { label: "B", text: "「我发誓不会再像以前那样对你了——你可以相信我。」", correct: false,
+            feedback: "INFJ需要的不是誓言——誓言只在没有考验的时候漂亮。Ta需要的是一个清晰的、可操作的安全机制，而不是一句浪漫的保证。" },
+          { label: "C", text: "「我尽量——但我毕竟是个人，有时候可能会不自觉地……你能多包容一下吗？」", correct: false,
+            feedback: "你在要求INFJ再给你一次宽容。这等于把安全的责任又转给了Ta——'如果我做不到，是你不够包容'。INFJ沉默了——这个回答太熟悉了。" },
+          { label: "D", text: "「你把话说得这么清楚，我还有什么理由不答应。」", correct: false,
+            feedback: "这句话透露了你的态度——你是被条件说服的，不是发自内心理解的。INFJ需要的是一个自觉的人，而不是一个被规训的人。" }
+        ]
+      }
+    ]
+  }
+,
+
+  // ==================== 挽回 INTJ ====================
+  {
+    id: 'intj-winback',
+    category: 'winback',
+    name: '挽回 INTJ',
+    fullName: '建筑师',
+    emoji: '🦉💔',
+    theme: { primary: '#3d5a80', accent: '#98c1d9', gold: '#b8a07a' },
+    description: '你们分手了。分手时INTJ冷静地说了一句："数据分析不支持继续。"Ta没有情绪，只是一份理性的结论。你要怎么让一个用逻辑保护自己的人再次相信你？',
+    tags: ['复合', '挽回', '理性'],
+    winQuotes: [
+      '「我重新做了分析。你的路径修正了——不是靠口头承诺，是靠可验证的行动。结论更新：重新纳入长期规划。」'
+    ],
+    loseMsg: 'INTJ的决定基于数据。下次挽回前，先让数据说话。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：你们分手了——数据的判决",
+        scene: "分手两周了。分手那天INTJ没有吵架没有哭泣——Ta打开了一个表格，列出了你们关系中五个核心不兼容点，然后说：「数据不支持继续。综合评分低于阈值。」然后就走了。你现在看着那张表——每一个不兼容点都像一把手术刀，精准而无情。",
+        question: "你想要联系Ta。但INTJ不吃情绪——你的第一步是什么？",
+        options: [
+          { label: "A", text: "不联系。先花时间逐一分析表格里的五个不兼容点，列出每个问题的客观改善方案。准备完了再行动。", correct: true,
+            feedback: "INTJ尊重数据——你也在用数据回应。当你把改善方案发给Ta时，Ta会看到你不是在求复合——你是在提交一份修正报告。这让INTJ重新评估你的分数。" },
+          { label: "B", text: "发一句：「我好想你——我们能再见一面吗？」", correct: false,
+            feedback: "在INTJ的框架里——'想'不是变量。你的情绪不会改变表格里的任何一个不兼容点。这份消息会被归档为'情绪化请求'。" },
+          { label: "C", text: "解释说表格里有些分析是不全面的——你当时的状况Ta没有完全考虑进去。", correct: false,
+            feedback: "你在质疑INTJ的分析——而这是Ta花了时间做的。在INTJ看来，找到表格的漏洞不等於解决了问题——只是换了个角度辩解。" },
+          { label: "D", text: "找Ta的朋友帮忙劝说。", correct: false,
+            feedback: "INTJ不认压力——只认逻辑。通过第三方施压只会让Ta认为'你在尝试绕过我的判断系统'。这会让你在这个表格里的得分进一步下降。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：Ta看了你的报告",
+        scene: "你花了十天准备了一份详尽的改善方案。INTJ回了一句：「你的方案我看了。三个点方向对，两个点数据不足。」然后给你发了一份带有批注的修订版，用红色标出了逻辑漏洞。",
+        question: "面对这份批注——你怎么应对？",
+        options: [
+          { label: "A", text: "仔细研究红笔批注，修补逻辑漏洞，重新提交。不抱怨，不解释，不要求见面——只提交更新后的版本。", correct: true,
+            feedback: "INTJ看到了修订版——你在用Ta的语言沟通。批注不是为了让你难堪——是看你能不能接受feedback并改进。你通过了第二轮测试。" },
+          { label: "B", text: "「你居然给我批红字——我以为我们之间的东西不能这么冷冰冰地分析。」", correct: false,
+            feedback: "你在要求INTJ放弃最自然的沟通方式。对Ta来说——批注就是关心。你拒绝了批注=你拒绝了Ta的操作系统。" },
+          { label: "C", text: "重新提交时顺便加了一段你的心路历程和现在有多后悔。", correct: false,
+            feedback: "INTJ会直接跳过你的心路历程——情绪不是Ta框架里的有效变量。在分析报告里插入感情陈述只会稀释你的可信度。" },
+          { label: "D", text: "按照批注都改了——但是删掉了其中一个你很在意的点，觉得没必要。", correct: false,
+            feedback: "你擅自编辑了INTJ的判断——这意味着你认为自己的判断高于Ta的数据。这不是在协商——是在单方面否决。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：你们坐下来——第一次面对面",
+        scene: "基于你的改善方案，INTJ同意跟你见一面。在约定的时间，Ta准时到了。没有寒暄，没有拥抱——Ta坐下后把手机放在桌上，看着你说：「开始。你有十五分钟。」",
+        question: "这十五分钟你怎么用？",
+        options: [
+          { label: "A", text: "「我准备了四个部分。第一部分——五个不兼容点的现状分析。第二部分——每个点的纠正路径和已完成的行动。第三部分——潜在的残留风险。第四部分——你还有什么需要我补充的数据。」", correct: true,
+            feedback: "INTJ的眼睛亮了一丝——不是感动，是效率认可。你精心组织了信息，给了结构，还留了一个开口让Ta补充。这种'尊重我时间'的态度比任何表白都让INTJ愿意继续。" },
+          { label: "B", text: "「谢谢你愿意见我——我知道这对你来说不容易。我先告诉你我这段时间有多后悔……」然后开始讲感受。", correct: false,
+            feedback: "INTJ在计时。你的感受不是Ta需要的——数据才是。等你讲完感受，十五分钟已经过了大半——留给真正有价值的信息的时间太少了。" },
+          { label: "C", text: "「我不够好——我不需要你马上相信。我只想让你看到我愿意改。」然后等着看反应。", correct: false,
+            feedback: "INTJ不需要你的态度——需要你的方法。'愿意改'不是一个行动计划——它是一个情绪承诺。情绪承诺不是可验证的。" },
+          { label: "D", text: "用十五分钟把改善方案从头到尾念了一遍——字字不差，显示自己准备充分。", correct: false,
+            feedback: "INTJ已经读过你的方案了。当面重复只是浪费时间。Ta要的不是你念稿——是你实时回应问题并展示你在思考。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta给了你新的数据",
+        scene: "见面后，INTJ发给你一份新的文档——不是关于你们的，是关于Ta自己的工作项目。里面有大量的数据和逻辑分析，但没有一个字提到感情。附言：「你觉得这个方向合理吗？」",
+        question: "这其实是一个深度测试——你怎么回应？",
+        options: [
+          { label: "A", text: "认真阅读后回复——提出两个逻辑上需要加固的地方，和一个你没有足够信息下判断的地方。再单独加一句：分析到位，很喜欢看。", correct: true,
+            feedback: "INTJ在测试你是否能跟上Ta的思维速度——哪怕是在Ta的专业领域。你的回应证明你可以——而且最后那句'很喜欢看'精准地表达了个人认可而不泛滥。数据分析师的最高表扬。" },
+          { label: "B", text: "「这是你的项目我不会乱评价——但我觉得你做什么都会做好的。」", correct: false,
+            feedback: "INTJ给了你数据是邀请你参与思考——你婉拒了这个邀请。你的赞美是空的——在INTJ看来，没有具体反馈的赞美等于'我没看'。" },
+          { label: "C", text: "趁机借这个话题聊感情：「你工作这么投入我很佩服——我也在思考我们的关系需要同样的投入。」", correct: false,
+            feedback: "你劫持了Ta的专业对话来聊感情——这是对Ta领域的入侵。INTJ会觉得你无法在任何话题上保持专业边界。" },
+          { label: "D", text: "快速浏览后回：「我觉得方向没错——但具体细节我不太懂这个领域。」", correct: false,
+            feedback: "你没有花足够的时间。INTJ的这类请求非常罕见——这意味着Ta信任你的判断能力。而你的快速回复暴露了你没有认真对待这份信任。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：你看到了他的情绪——但他不承认",
+        scene: "你们一起去参加了一个活动，结束后INTJ明显心情低落。你问他怎么了，他说：「很多变量没有达到预期效率。今天是一个低ROI的社交活动。」但你知道——不是这个。有个家伙公然嘲笑过INTJ的一个观点。",
+        question: "你看出了问题，但INTJ在用分析性语言保护自己。你怎么回应？",
+        options: [
+          { label: "A", text: "「今天有个人说了不尊重的话——我可以理解那很烦人。如果你不想聊，我们就不聊，但我可以看着你消化。」然后安静地陪他走了一段路。", correct: true,
+            feedback: "你找到了真正的原因但没有强迫INTJ承认。你表达了理解但没有要求Ta切换模式。这种尊重让INTJ走路的速度慢了下来——不是冷，是放松。" },
+          { label: "B", text: "「他嘲笑你的那个地方——我都看到了。我感觉你很受伤。」", correct: false,
+            feedback: "你说出了情绪——但INTJ还没准备好给它命名。你在强迫Ta在你说的时间处理情感——这是一种侵犯。" },
+          { label: "C", text: "相信了Ta的解释——开始帮他分析怎么提高社交活动的效率。", correct: false,
+            feedback: "你错过了真正的信息并被表面逻辑骗了。这会让INTJ觉得你永远无法读懂Ta。Ta以后不会再跟你分享类似的时刻。" },
+          { label: "D", text: "「你再这样憋着不说——我就跟你以前一样了。不能沟通我们走不远的。」", correct: false,
+            feedback: "你把INTJ的情绪模式当成了一个需要被修正的问题——而且语气是指责性的。这会让INTJ从这里以后在你面前筑起更高的墙。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：他给你设了一个实际的考验",
+        scene: "INTJ对你说：「下个月我要处理一个大型项目的发布——未来四周我的可用时间将减少80%。如果你能在这段时间维持稳定的沟通质量而不把关系能量降为零——我们可以谈下一步。」",
+        question: "这是一个实验。你怎么通过它？",
+        options: [
+          { label: "A", text: "「好。告诉我你的沟通窗口——我可以配合。如果你只能每天一条短消息，我就发一条有意义的信息。不要数量要质量。等四周后我们再复盘。」", correct: true,
+            feedback: "你理解了这个实验的目标——不是在考验你的忍耐力，而是在考验你是否能在低频率下维持连接质量。你甚至提出了有意义的而不是垃圾式的沟通。INTJ在文档里给你打了一个勾。" },
+          { label: "B", text: "「一个月？那我怎么知道你还喜不喜欢我？」", correct: false,
+            feedback: "你又在要求确认——而且是要求在一个INTJ最忙的时候。你等于在说你的不安全感比Ta的工作更重要。这是一个巨大的扣分项。" },
+          { label: "C", text: "「好——我每天给你发消息，你不用回。让你知道我还在。」", correct: false,
+            feedback: "单向传播不是沟通。INTJ会无视每天的单向消息——这不是维持关系，这是你单向的输出。毫无意义的行动会让INTJ觉得你不懂什么是有效沟通。" },
+          { label: "D", text: "答应了——但第三周就开始冷淡，觉得太委屈。", correct: false,
+            feedback: "你没能坚持——而INTJ在记录。这个实验的结果是负面的——因为这正是你们分手前的最低谷模式。你验证了之前的判断。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：他说了一句实话——你没想到",
+        scene: "四周结束后，INTJ看着你说：「你的压力测试通过了。但还有一个问题——你对我的'规划型人格'怎么看？说实话。」",
+        question: "这是个直率的问题——你要直率地回答。",
+        options: [
+          { label: "A", text: "「有时候我会觉得太冷。但我也知道——你的规划不是因为不在乎，恰恰是太在乎。你花时间分析是因为这段关系值得分析。这条我慢慢学会了。」", correct: true,
+            feedback: "你坦诚地说了负面感受但立刻给了context。INTJ的眉头松开了——不是因为你在夸他，是因为你理解了他行为背后的动机。这就是他想要的：被理解，而不是被崇拜。" },
+          { label: "B", text: "「还行——我都适应了。只要结果是好的就行。」", correct: false,
+            feedback: "'适应'是妥协——INTJ不需要你在忍。他想知道你的真实感受——你却给了合格评价。这种不信任的真实感比批评更远。" },
+          { label: "C", text: "「说实话——太冷了。有时候我觉得你在管理项目而不是谈恋爱。」", correct: false,
+            feedback: "你说的是事实——但你只说了负面影响。INTJ花了大量时间去分析因为你值得——而你只看到了冷的部分没看到努力的部分。批评没有context就是指责。" },
+          { label: "D", text: "同样反问他：「那你对我的'感性化决策'怎么看？」", correct: false,
+            feedback: "你在转移焦点。INTJ问你一个开放问题——你不回答，反手就给了一个新的问题。这不是对话——这是逃避。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：他说你的长期规划不合理",
+        scene: "你们在讨论未来。INTJ听了你的计划后说：「你这个三到五年的规划有几个关键假设没有数据支持。我不认为你应该按这个方向走。」语气——一如既往——冷静且带分析性。但这句话真的很硬。",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「哪些假设你觉得需要更多数据？我可以去验证。如果你愿意，我们可以一起搭一个更合理的框架。我尊重你的分析能力。」", correct: true,
+            feedback: "你没有防卫——直接问漏洞在哪并建议共同构建。这是INTJ最能接受的回应方式——你把他当成了资源而不是对手。" },
+          { label: "B", text: "「这是我的梦想——你不能这样打击我。你从来不懂梦想不是按数据来的。」", correct: false,
+            feedback: "你在感情用事。INTJ不是打击——是给你数据帮你避免失败。但你听到的是攻击——从此INTJ不会再对你的规划说任何真话。" },
+          { label: "C", text: "「你觉得不对就直说——但别用这种'你的计划不成立'的语气，像是老师在给学生打不及格。」", correct: false,
+            feedback: "你在对交付方式抗议——INTJ则认为你逃避了内容。方式从来不是INTJ在乎的——内容才是。抗议方式恰恰表明你无话可说。" },
+          { label: "D", text: "不服气但也不反驳——用沉默表达不满。", correct: false,
+            feedback: "沉默对INTJ来说是最糟糕的信号——因为这等于信息完全不可得。你宁愿让他猜你为什么不满也不可能告诉他。下次他不会给你反馈了——因为你不会用。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：他给了你一份'改进清单'",
+        scene: "他发来一份文档标题是：「关系中可优化的六个方面」。文档里列出了他认为你能更好的六个地方——用数据、例子和改善建议。附言：「这不代表我对你的看法变了——这是为了共同的效率。」",
+        question: "你怎么回应这份清单？",
+        options: [
+          { label: "A", text: "逐条回复——对三条表示接受并附上改进计划，对一条表示保留并解释理由，对两条请求更多数据以更好理解。", correct: true,
+            feedback: "你认真对待了——但你没有全盘接受。你逐条给出了理性回应。INTJ完全尊重这一点——因为你在跟他的逻辑对话而非盲目迎合。他会把'解释理由'的那条记下来重新思考。" },
+          { label: "B", text: "「你一直在说我哪里不好——你能不能哪次说说我哪里好？」", correct: false,
+            feedback: "你收到了一份详细的投资计划——但只听到了批评。INTJ花时间写这些恰恰是因为在乎你——你的一句反问让这份work变成了攻击的证据。" },
+          { label: "C", text: "每一句都标上'我会改'——然后照单全收。", correct: false,
+            feedback: "INTJ会看穿全票通过——这不真实。你没有独立的判断能力——这让INTJ开始怀疑你只是为了挽回而说任何话。" },
+          { label: "D", text: "没有回——觉得这太冷酷了，需要消化几天。", correct: false,
+            feedback: "你又在沉默——但这不像以前。现在INTJ已经开了门在等回应——你的沉默会让门重新关起来。这是因为他会觉得你无法接受建设性批评。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：别人质疑你们的复合",
+        scene: "INTJ的同事听说了你们的复合，轻蔑地说：「你那么理性的人，怎么会吃回头草？数据不都告诉你不行了吗？」INTJ把这件事告诉了你——语气平静，但你知道这句话确实刺到了他。",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「他不懂——你的数据不是用来裁决的，是用来优化的。我们第一轮数据不好不代表第二轮的方程没有解。回头草这个比喻忽略了我们是在做迭代。」", correct: true,
+            feedback: "你用INTJ的语言重构了问题——把'回头草'变成了'迭代优化'。INTJ嘴角出现了少见的弧度——你不仅理解了他的方法论，还用他的方法论保护了这段关系。这比他想象中更触动他。" },
+          { label: "B", text: "「你同事真的很过分——你不需要听这种话。我帮你说回去。」", correct: false,
+            feedback: "你听到了攻击但只回应了愤怒——INTJ要的不是保护，是帮他处理信息。你的反应太情绪化而没有帮他解构这个批评。" },
+          { label: "C", text: "「也许你同事说得有点道理——我们确实需要时间验证。不急着反驳。」", correct: false,
+            feedback: "你站在了同事那边——即使你说了'需要时间'。INTJ听到的是你对这段关系缺乏坚定的信心。" },
+          { label: "D", text: "开始质疑自己——「你同事说得也对……也许我确实配不上你。」", correct: false,
+            feedback: "INTJ最怕的就是你因为别人的一句评论就动摇。这不只是软弱——这是在给复合理由增加不稳定性。他会觉得你不值得这场赌博。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：他说了一句你最想听的话",
+        scene: "夜深了，INTJ安静地做完了一份工作，然后突然说：「你知道吗——我最近修改了我的分析框架。关于不兼容性的那个部分——我把其中的一个参数从'固定值'改成了'可修正'。因为你的路径跟第一次已经不一样了。」",
+        question: "这是INTJ能说出的最接近告白的话。你怎么回应？",
+        options: [
+          { label: "A", text: "「这是你对我做过的最大的肯定——比任何'我爱你'都重。你把'不可改变'改成了'可修正'——我也在学。我们把成长写进公式里——从现在开始。」", correct: true,
+            feedback: "INTJ在听到你把'公式'当成赞美后——轻轻地说了一句'好'。只有他能把'好'这个词说成最深的回应。他的分析能力终于找到了一个可长期规划的变量——你们的关系。" },
+          { label: "B", text: "「你终于承认你可以错了！我就知道你不是铁板一块。」", correct: false,
+            feedback: "你在欢欣鼓舞地宣布胜利——而INTJ开放了一个极少开放的门。你的欢呼让他觉得自己不该开那扇窗户。他会重新评估'可修正'这个参数的风险。" },
+          { label: "C", text: "「我不需要分析——我只需要你的心。这些框架对我来说太难了。」", correct: false,
+            feedback: "你拒绝了INTJ最深沉的爱的表达方式。他对你的肯定体现在分析能力上——你却说它太难。这等于说——'你的爱的语言——我不感兴趣'。" },
+          { label: "D", text: "「谢谢你——但我一直没觉得自己有什么大变化。只是运气好。」", correct: false,
+            feedback: "你在贬低INTJ的判断和你的努力。一个花了时间数据分析的人——你用一句运气好打发了他。这是对他时间和思维的双重轻视。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「你的长期承诺是什么」",
+        scene: "复合前夕。INTJ拿出一个笔记本——里面是一张空白页，只有顶部写着几个字：「目标——长期关系。优化路径——请填写」。他把笔推到你面前：「如果你要重新进入一段关系——我需要看到你的核心目标和风险控制方案。不用长——一页就行。」",
+        question: "这是INTJ最后的邀请——用他最在乎的语言。你怎么填写？",
+        options: [
+          { label: "A", text: "在纸上写了四行——第一行：核心目标。第二行：为达成目标我承诺的三个行为。第三行：可预见的旧模式复发风险和应对方案。第四行：如果我离线了——你该用什么方法把我拉回来。最后签了名字。", correct: true,
+            feedback: "INTJ拿起纸看了一遍——然后在他的笔记本里找到一页空白页。他写下了一个新的标题：'A+B=长期'。他合上笔记本——但没有收起来。他把笔记本放在了你们之间的桌上——作为以后可以一起写的文档。这是他能做出的最深的承诺——一个开放的、可编辑的未来。" },
+          { label: "B", text: "在纸上写了满满一页——不停地写自己的忏悔和改变的决心。", correct: false,
+            feedback: "INTJ需要的是结构——不是忏悔录。满满一页但没有框架——这不是他要求的。他会觉得你没有回答问题而是在倾诉。" },
+          { label: "C", text: "「我不擅长写这些东西——我可以直接跟你说吗？我不想用笔。」", correct: false,
+            feedback: "你拒绝了他的语言——笔和纸。对INTJ来说写下来的东西才有重量。口述意味着可以随时改——而INTJ需要的是可验证的记录。" },
+          { label: "D", text: "只写了一行：「我爱你，我会一直爱你。」", correct: false,
+            feedback: "这句话是所有人都会写的。INTJ给了你一个系统工程的机会——你回了通用模板。他会觉得你不想也不愿进入他的世界。" }
+        ]
+      }
+    ]
+  },
+
+  // ==================== 挽回 ENFJ ====================
+  {
+    id: 'enfj-winback',
+    category: 'winback',
+    name: '挽回 ENFJ',
+    fullName: '主人公',
+    emoji: '☀️💔',
+    theme: { primary: '#d4775e', accent: '#f0a07c', gold: '#e8c97a' },
+    description: '你们分手了。你说过一句"你管得太多了"，熄灭了ENFJ心中那盏一直在为你亮的灯。Ta习惯照顾所有人——唯独忘了照顾自己。你还能让这颗太阳重新为你升起吗？',
+    tags: ['复合', '挽回', '温暖'],
+    winQuotes: [
+      '「你回来那天，说了一句话让我哭了——不是"我错了"，是"以后换我照顾你"。原来太阳也需要被温暖。」'
+    ],
+    loseMsg: 'ENFJ不轻易放手——但一旦放手，是因为筋疲力尽。等Ta充满了电，也许下一次，你会学会珍惜。',
+    questions: [
+      {
+        id: 1,
+        title: "第1关：你们分手了——Ta筋疲力尽了",
+        scene: "分手已经一个月了。那天ENFJ最后说的一句话是：「我已经没有更多可以给你了。」然后走了——不是摔门，是极其安静地离开。后来你才知道Ta在那段时间同时在照顾生病的母亲、帮助朋友度过离婚、加班应付公司的合并——以及应对你的情感需求。",
+        question: "你想通了为什么分手——但你该怎么重新出现？",
+        options: [
+          { label: "A", text: "不急着联系。先通过观察了解Ta最近的状态——但不要让人知道你在打听。等确认Ta的生活压力缓和了，再出现。", correct: true,
+            feedback: "ENFJ离开是因为筋疲力尽。你不在Ta最需要的时候出现是一种尊重——等Ta充了一些电再出现，让重逢不必是消耗。" },
+          { label: "B", text: "马上去找Ta——带一堆礼物和道歉，表达你的感悟。", correct: false,
+            feedback: "ENFJ此刻最不需要的就是有人再要求Ta处理别人的情绪。你的出现——无论带着多少礼物——对此刻的Ta来说是一种闯入。" },
+          { label: "C", text: "不理不睬——等Ta自己联系你。毕竟分手是Ta提的。", correct: false,
+            feedback: "ENFJ在分手前已经等了你很久很久——继续等意味着你什么也没学到。Ta会把这当作你不在意Ta的最终证据。" },
+          { label: "D", text: "通过朋友传话——让Ta知道你在改变，避免直接联系的压力。", correct: false,
+            feedback: "通过第三方传话会让ENFJ觉得你在做表面工作——真正的改变不需要代言人。Ta会觉得你在利用共同的社交网络来施压。" }
+        ]
+      },
+      {
+        id: 2,
+        title: "第2关：你终于出现了——但很低调",
+        scene: "一个月后。你终于给ENFJ发了一条消息——不是关于感情，而是：「我看到你公司最近完成了那个合并。你一定做了很多幕后工作。辛苦了。」你选择了职业领域的认可，没有提任何复合。",
+        question: "Ta已读但没回。三天后——Ta回了：「谢谢。确实很忙。」你怎么接？",
+        options: [
+          { label: "A", text: "「理解。你先忙——等你手头的事少一些，如果有时间，我想见你一面。不急。」然后真的不再催。", correct: true,
+            feedback: "ENFJ看到了'不急'两个字。在Ta的语言里——不急代表你学会了尊重Ta的节奏。这个分寸感让Ta对你保持了微弱的but真实的好感。" },
+          { label: "B", text: "「终于回我了！你都在忙什么？告诉我多一点——我都关心。」", correct: false,
+            feedback: "你的热情太急切了。ENFJ在小心翼翼地伸出手——你一个猛拉回来，会让Ta把这只手又缩回去。Ta需要的是缓慢的节奏，不是密集输出。" },
+          { label: "C", text: "「没事——我只是想让你知道我在。不用回我。」", correct: false,
+            feedback: "你没有推进任何事。虽然表达了尊重——但过度的自我消隐会让你在ENFJ心中变成一个模糊的背景，不值得付出精力。" },
+          { label: "D", text: "「你一直都这么忙——我希望你有时间照顾自己。」然后分享了一个自我照顾小建议。", correct: false,
+            feedback: "这个关心的方向是对的——但ENFJ可能会解读为'你又在管我怎么生活'。你需要先确认对方愿意接受意见，然后才给建议。" }
+        ]
+      },
+      {
+        id: 3,
+        title: "第3关：Ta终于同意见面了",
+        scene: "几周后，ENFJ回复了你的消息：「周日有空。你选地方。」你选了一个安静、光线温暖、不需要久待的茶馆。Ta到了——比约定的早了十分钟。看到你时微微点了点头，但没有拥抱。",
+        question: "这杯茶的时间里——你最该说什么？",
+        options: [
+          { label: "A", text: "「我知道那段时间你承受的比我看到的多得多——我只是一个接收端。我想先听你说——不管是工作、家庭，还是任何你想说的。」", correct: true,
+            feedback: "ENFJ已经太久没有人问Ta真正经历了什么。你把聚光灯转向了它应该在的位置——Ta。这不是聊天技巧——这是终于把天平摆对了方向。" },
+          { label: "B", text: "开始诉说这一个月你有多痛苦、想Ta想得天天失眠。", correct: false,
+            feedback: "焦点又一次回到了你身上。ENFJ听到的是——即使分手了，话题还是关于你需要什么。这不是挽回——是需求重现。" },
+          { label: "C", text: "「我列了一份我哪里做得不对的清单——我可以现在读给你听吗？」", correct: false,
+            feedback: "虽然自我反思是好的——但重点应该是在Ta的感受上，不是你的分析上。ENFJ需要的不是你的分析能力——需要的是你真正关心Ta。" },
+          { label: "D", text: "安静地喝茶，聊天气、聊新闻——但不敢切入正题。", correct: false,
+            feedback: "你在拖延，而ENFJ在消耗。对Ta来说——沉默是因为你不敢，而不是你尊重。这是一个需要被翻开的一页——你迟迟不翻，Ta会觉得你宁愿绕开。" }
+        ]
+      },
+      {
+        id: 4,
+        title: "第4关：Ta向你袒露了那时的脆弱",
+        scene: "在茶馆里，ENFJ终于开始说话。「妈妈在医院那段时间——我每天在两个城市之间跑。晚上回到自己住的地方，我就一个人坐在沙发上，什么都没力气做。那个时候——我需要一个人。不需要帮我解决问题——只是坐在这。你不在。」",
+        question: "这段话重得让人窒息。你怎么回应？",
+        options: [
+          { label: "A", text: "「我听到了——我没有在。没有任何借口值得说。我能做的就是现在在这里，并且承诺以后如果你再需要人坐在这——我会是第一个到的人。」", correct: true,
+            feedback: "你没有用任何借口覆盖Ta的痛苦。你承认了缺席，并给了可操作的承诺。ENFJ在听到'第一人'时眼睛亮了一下——因这正是Ta一直渴望却从未得到的东西。" },
+          { label: "B", text: "解释那时你也有自己的工作和压力——不是故意不在。", correct: false,
+            feedback: "你在防守。ENFJ不是在攻击——在分享一个一直堵塞的伤口。你的解释等于在说——你的缺席是有理由的，所以不应该被如此伤心。这让伤口加倍。" },
+          { label: "C", text: "「我真的不知道你需要我——你从来不告诉我你需要什么。」", correct: false,
+            feedback: "ENFJ承认自己不表达需求很困难——但这是因为Ta太害怕被拒绝。你说'不知道'没办法安慰——因为这是伤害的核心，而不是辩护的理由。" },
+          { label: "D", text: "「我现在很后悔——我可以做些什么来弥补吗？你说，我会做。」", correct: false,
+            feedback: "开放式补救建议把责任又重新放在ENFJ身上——让Ta来告诉你如何修复。你需要在Ta开口之前主动提供安全的解决方案。" }
+        ]
+      },
+      {
+        id: 5,
+        title: "第5关：你的关心——Ta在测试",
+        scene: "你们恢复了一些联系。这天ENFJ说：「我今天好累——一整天都在帮同事收拾一个项目的烂摊子。没事，只是说出来舒服一点。」然后就没有下文了。",
+        question: "这不是'没事'——这是一个测试。你怎么回应？",
+        options: [
+          { label: "A", text: "「你的同事很幸运有你。但你是不是又把自己的事先放一边了？你今天自己的to-do完成了吗？」不是质问——是真的关心。", correct: true,
+            feedback: "ENFJ没想到你注意到了这个微妙之处。你不是在夸Ta帮同事——而是在看Ta有没有照顾好自己。这种关心不需要包装——直接的、温暖的、只看Ta的。ENFJ忽然觉得你又回来了。" },
+          { label: "B", text: "「干得好！你就是太厉害了——总是能帮别人解决一切。」", correct: false,
+            feedback: "赞美了行为但没有看到付出的代价。ENFJ会被这样的回应进一步推到'我只有继续做才有价值'的恶性循环里。" },
+          { label: "C", text: "开始讲你自己今天做了多少——仿佛在比较谁更累。", correct: false,
+            feedback: "你在做比较——但ENFJ不是在找竞品。Ta需要的是被看到，不是被比较。" },
+          { label: "D", text: "没有多问——回了一个'抱抱'和咖啡emoji。", correct: false,
+            feedback: "Emoji不是关心。ENFJ不需要符号——需要真实的提问和投入的关注。这太低了，不够。" }
+        ]
+      },
+      {
+        id: 6,
+        title: "第6关：Ta又在照顾你——你注意到了",
+        scene: "你们一起散步时你滑了一下。ENFJ条件反射地伸出手扶住了你。「没事吧？」Ta的眼神充满了真正的担心。然后你注意到——这好像是分手以来，Ta第一次这么自然地对你好。",
+        question: "面对这个本能的好意——你怎么回应？",
+        options: [
+          { label: "A", text: "「谢谢你扶我——这让我觉得像以前。但我也想让你知道——接住别人的时候不用每次都那么用力。我会自己站稳——你也可以放松。」", correct: true,
+            feedback: "ENFJ听到第一句微笑——听到第二句后有点惊讶。你说'你可以放松'——从来没有人告诉ENFJ付出的时候可以收力。这句话比任何浪漫表白都更重要。Ta感觉到了一种前所未有的被理解。" },
+          { label: "B", text: "「你总是这样——即使分手了还是在照顾我。我好想你。」", correct: false,
+            feedback: "你直接把关切和复合挂钩——ENFJ会觉得自己的关爱被用来当成了复合的跳板。下次Ta可能会刻意收敛这种关心。" },
+          { label: "C", text: "若无其事地继续走路，假装没注意到这个关切的瞬间。", correct: false,
+            feedback: "你回避了这个关切的时刻——ENFJ会觉得自己的本能反应不被需要或不受欢迎。这是一种否定——否定了Ta最自然的样子。" },
+          { label: "D", text: "幽默地说：「不愧是超级英雄。」然后笑了。", correct: false,
+            feedback: "幽默是用来缓解紧张的——但ENFJ的关切是真实的、深沉的。你的玩笑在Ta看来是轻描淡写，没有真正承认这个时刻的重量。" }
+        ]
+      },
+      {
+        id: 7,
+        title: "第7关：你犯了一个错误",
+        scene: "有一次ENFJ跟你分享了一个让他们不开心的冲突场景。你不小心进入了解题模式——给了一堆建议。Ta语气变得淡了：「好的——我知道了。」但你知道这不是真的'好'。你意识到——你又在给方案而不是听。",
+        question: "你识别出了问题——怎么马上弥补？",
+        options: [
+          { label: "A", text: "「对不起——我马上跳到了解法。那不是你现在需要的。你能重新跟我说一遍那件事吗？不需要我带方案——我只想听你是怎么经历的。」", correct: true,
+            feedback: "你主动承认了错误并要求重来。ENFJ被这种自觉感动得差点忘了刚才的不快。这是第一次——在给建议后你没有坚持建议是对的——你主动回到听的位置。" },
+          { label: "B", text: "换话题——觉得继续聊那件事会让气氛变差。", correct: false,
+            feedback: "你的逃避会被ENFJ精确地捕捉——并被解释为对深层交流的恐惧。这会让Ta进一步退回去。修复的关键在于面对，而不是绕过。" },
+          { label: "C", text: "继续给建议——但加了一句'当然这只是我的个人看法'来缓和。", correct: false,
+            feedback: "你没有停止解题——只是加了一个免责声明。免责不会让建议变成倾听——只会让ENFJ觉得你在技术上包装了同一个错误。" },
+          { label: "D", text: "沉默——让Ta自己消化。", correct: false,
+            feedback: "沉默而不补偿等于默认。ENFJ不需要你完美——但需要你敢于承认错误后立刻修正。" }
+        ]
+      },
+      {
+        id: 8,
+        title: "第8关：Ta终于接受了你的帮助",
+        scene: "有一天ENFJ在搬家。他发了一个朋友圈——「肩膀在搬家日失去了功能。」按照以前的剧本——你会说'需要帮忙吗？'但这次Ta没找你。这次你什么也没问——你带了工具和食物出现在他家门口。",
+        question: "Ta开门看到你——你怎么说？",
+        options: [
+          { label: "A", text: "「不是来问你需不需要——是来告诉你今天的命令是——你坐着，我干活。不用谢，不用愧疚。对我是礼物，对你也是。」", correct: true,
+            feedback: "ENFJ的眼睛红了但不是因为累——是因为有人不问他'要不要'而直接出现了。你切中了ENFJ最隐秘的渴望——有人主动照顾而不需要被请求。搬家这天改变了非常多的东西。" },
+          { label: "B", text: "「你怎么不叫我帮忙？你说一句我就来了。」", correct: false,
+            feedback: "你又在责怪Ta不表达需求——而ENFJ已经在搬家日筋疲力尽。你的话在加重Ta的愧疚感而不是减轻Ta的负担。" },
+          { label: "C", text: "把东西搬完后就走了，说'不打扰你整理新家'。", correct: false,
+            feedback: "你提供体力但没有提供陪伴。ENFJ需要的是你在——不仅仅是你的劳动力。你走的时候Ta会有点空。" },
+          { label: "D", text: "跟Ta约好说下次有这种事一定要告诉你。", correct: false,
+            feedback: "你在做未来的约定而不是享受当下的服务。ENFJ需要的是现在——不是遥远的承诺。你又在用言语取代行动。" }
+        ]
+      },
+      {
+        id: 9,
+        title: "第9关：你们谈起了未来——Ta怕重演",
+        scene: "你们的关系明显回暖了。喝茶时ENFJ突然放下杯子：「我现在很犹豫。不是因为我还怪你——是因为我了解自己的模式。我会重新付出一切——然后某一天又发现自己空了。到时候你会不会又……没看见？」",
+        question: "这是一个非常坦诚的问题——你怎么回答？",
+        options: [
+          { label: "A", text: "「你的警觉心是好事——它证明你在保护自己。我不需要你放下它。我只需要一个权限——当你快要空的时候，你会告诉我一声吗？哪怕只是一个词。我会接住那个信号。」", correct: true,
+            feedback: "ENFJ悄悄地舒了一口气。你没有要求Ta扔掉警戒线——你只是求你被包含在预警系统里。这是对Ta自主权的尊重。你们之间终于有了一种新的动态——不是照顾者和被照顾者，是有预警有回应的双人舞。" },
+          { label: "B", text: "「不会的，你放心，我这次真的改了。」", correct: false,
+            feedback: "模糊的保证不会让ENFJ感到安全——它太泛了。ENFJ需要的是具体的机制，而不是轻松的口头承诺。" },
+          { label: "C", text: "「你太不相信我了。我已经证明了很多——你就不能给我多一点信任吗？」", correct: false,
+            feedback: "防卫性回应会让ENFJ觉得——你又在把重点放在你是不是好人，而不是如何让Ta安全。你该关心的是机制，不是你的名誉。" },
+          { label: "D", text: "「那我们试试看吧——万一不对，你就告诉我。」", correct: false,
+            feedback: "模糊且把监控的责任完全推给了ENFJ。这对ENFJ来说是最累的模式——要一边照顾你，一边还要监控你。这不是修复，是加倍的负荷。" }
+        ]
+      },
+      {
+        id: 10,
+        title: "第10关：Ta问你索要'时间'",
+        scene: "ENFJ突然说：「我想一个人去旅行三周——去一个没有信号的地方。不是逃跑，是真的很需要让自己重置一下。你能接受吗？」以前这就是你最大的恐惧——Ta需要独处意味着Ta不要你了。",
+        question: "你怎么回应？",
+        options: [
+          { label: "A", text: "「接受。三周没有信号——我会想念但不会干扰。你回来的时候，我会在同一个位置——不用汇报，不用解释。旅途是为了你——不为了我们。」", correct: true,
+            feedback: "ENFJ看到这几行字时，放下了手机。这不是旅行许可——这是你写的自由契约。曾经你最大的恐惧变成了你给Ta最稳定的安全——原来你真的可以不用拥有的方式去拥有一个人。" },
+          { label: "B", text: "「你要去那么久？没有信号的话我怎么知道你还安全？」", correct: false,
+            feedback: "你以安全为名行控制之实。ENFJ需要的是被信任能独处——你又一次把Ta的选择变成了需要被监控的事项。" },
+          { label: "C", text: "不高兴但不敢说——嘴上说去吧，但语气里藏着不情愿。", correct: false,
+            feedback: "ENFJ能读出你的不一致——这会毁掉旅行的意义。因为旅行现在不只是为了放松——也是为了证明离开你不会让事情变糟。而你让这件事变得可疑。" },
+          { label: "D", text: "提议一起去——像往常一样把独处变成共处。", correct: false,
+            feedback: "你无法让Ta独处——这是在占有Ta的时间。ENFJ的独处旅行是为了找到自己——不是为了和你一起找到你们。" }
+        ]
+      },
+      {
+        id: 11,
+        title: "第11关：你重新被带进Ta的社交圈",
+        scene: "ENFJ邀请你参加一个朋友圈的聚会——自从分手后你就没去过。到了现场，Ta的一个朋友明显不太友善——全程都在回避跟你说话。ENFJ注意到了，悄悄握了握你的手，没有说话。",
+        question: "你怎么应对这个不友善的朋友？",
+        options: [
+          { label: "A", text: "自然地保持礼貌——不回避，不讨好，不解释。当被问到时，坦诚但不防御地说自己的改变——但把话题转到ENFJ的幸福上。", correct: true,
+            feedback: "你没有对这个朋友宣战——也没有委屈求全。你稳定地坐着，把聚光灯对准ENFJ。这不是在做公关——这是用行动在说：我今天不是为了证明自己来的，是为了支持Ta来的。ENFJ看到了——那朋友也看到了。" },
+          { label: "B", text: "刻意对那个朋友特别热情——试图改变对方的看法。", correct: false,
+            feedback: "过度热情在ENFJ的朋友眼里是可读的表演——你越想改变他们的想法，他们越会确认你只是在做形象管理。" },
+          { label: "C", text: "整晚都尽量躲开那个朋友——减少跟ta的任何交集。", correct: false,
+            feedback: "你的回避是在认输——并且它暗示着那个朋友对你的负面评价可能是对的。ENFJ的朋友圈会集体注意到你在退缩。" },
+          { label: "D", text: "跟ENFJ私下说：「你的朋友对我不友善——你能不能说点什么？」", correct: false,
+            feedback: "你又在让ENFJ替你处理社交冲突。你不但没保护Ta——反过来要Ta在你和Ta的朋友之间做调解。这已经很接近旧模式。" }
+        ]
+      },
+      {
+        id: 12,
+        title: "第12关：终极考验——「我还能相信你吗」",
+        scene: "复合前夜。ENFJ坐在你对面，阳光在Ta身后——但Ta的眼里有一层薄雾。Ta沉默了很久，然后说：「你改变了——这我能看到。但我的潜意识还在怀疑——你是真的想照顾我，还是仅仅不习惯失去。我问这个问题不是为了怀疑你——是我需要确认我能把完整的自己交给你。」",
+        question: "这是ENFJ最后的屏障——你如何回答？",
+        options: [
+          { label: "A", text: "「我确实不习惯没有你——这不是秘密。但我回到你身边是因为你让我看到了自己的盲区——我不是来接收你的光的，我是来帮你擦灯罩的。把你的完整给我——我会用每一次行动证明这是我生命中最重要的责任。」", correct: true,
+            feedback: "ENFJ沉默了很久——不是因为犹豫，是因为你在回答了每一个层级。你承认了不习惯（诚实），定位了盲区（反思），定义了你的角色——擦灯罩（服务而非索取），并给了可验证的承诺。Ta的眼睛里那层薄雾终于散开成了阳光。Ta知道——这一次，是可以相信的。" },
+          { label: "B", text: "「怀疑是正常的——我只能继续证明。我的行动会让你看到。」", correct: false,
+            feedback: "你在投射到遥远的未来——但ENFJ需要在当下感受安全感。行动固然重要，但此刻Ta需要的是你明确表达你理解Ta的恐惧。" },
+          { label: "C", text: "「你不能一直活在过去——我也很受伤。我们需要一起往前走。」", correct: false,
+            feedback: "你在推开Ta的感受并要求Ta也看到你的痛苦——这不是共情，这是把对话变成谈判。ENFJ不会在谈判桌前交付自己的心。" },
+          { label: "D", text: "给了Ta一个拥抱但没说话——希望拥抱说明一切。", correct: false,
+            feedback: "拥抱是很好的补充——但不能替代回答。ENFJ问的是一个需要语言回应的问题。沉默的拥抱在此时不是一个答案——是一个省略。" }
+        ]
+      }
+    ]
+  }
+
 ];
 
-// ============================
+// ============================================================
 // 游戏状态
-// ============================
+// ============================================================
+let currentType = null;
 let currentLevel = 0;
 let lives = 3;
 let score = 0;
 let answered = false;
 
-// ============================
+// ============================================================
+// 路由系统
+// ============================================================
+function parseHash() {
+  const hash = window.location.hash.replace('#', '') || 'home';
+  const [screen, queryString] = hash.split('?');
+  const params = {};
+  if (queryString) {
+    queryString.split('&').forEach(pair => {
+      const [k, v] = pair.split('=');
+      params[k] = decodeURIComponent(v || '');
+    });
+  }
+  return { screen, params };
+}
+
+function navigateTo(screen, params = {}) {
+  let hash = screen;
+  const queryParts = Object.entries(params)
+    .filter(([, v]) => v !== null && v !== undefined)
+    .map(([k, v]) => `${k}=${encodeURIComponent(v)}`);
+  if (queryParts.length > 0) {
+    hash += '?' + queryParts.join('&');
+  }
+  window.location.hash = hash;
+}
+
+function handleRoute() {
+  const { screen, params } = parseHash();
+
+  if (screen === 'home') {
+    showScreen('screen-select');
+    currentType = null;
+  } else if (screen === 'game' && params.type) {
+    const type = personalityTypes.find(t => t.id === params.type);
+    if (!type) {
+      navigateTo('home');
+      return;
+    }
+    currentType = type;
+    applyTheme(type);
+    showWelcome(type);
+  } else if (screen === 'win' || screen === 'lose') {
+    // These are handled by endGame which sets the hash
+    // If accessed directly without state, redirect to game or home
+    const type = personalityTypes.find(t => t.id === params.type);
+    if (type && params.score) {
+      currentType = type;
+      applyTheme(type);
+      score = parseInt(params.score) || 0;
+      lives = parseInt(params.lives) || 0;
+      currentLevel = parseInt(params.level) || 12;
+      if (screen === 'win') {
+        showWinScreen();
+      } else {
+        showLoseScreen();
+      }
+    } else {
+      navigateTo(type ? 'game' : 'home', type ? { type: type.id } : {});
+    }
+  } else {
+    navigateTo('home');
+  }
+}
+
+window.addEventListener('hashchange', handleRoute);
+
+// ============================================================
+// 动态主题
+// ============================================================
+function applyTheme(type) {
+  const root = document.documentElement.style;
+  root.setProperty('--primary', type.theme.primary);
+  root.setProperty('--accent', type.theme.accent);
+  root.setProperty('--gold', type.theme.gold);
+}
+
+function resetTheme() {
+  const root = document.documentElement.style;
+  root.setProperty('--primary', '#6c5b7b');
+  root.setProperty('--accent', '#c06c84');
+  root.setProperty('--gold', '#d4a574');
+}
+
+// ============================================================
+// 选择页渲染
+// ============================================================
+function renderSelectPage() {
+  resetTheme();
+  const container = document.getElementById('select-categories');
+  container.innerHTML = '';
+
+  // Group types by category
+  const grouped = {};
+  personalityTypes.forEach(t => {
+    if (!grouped[t.category]) grouped[t.category] = [];
+    grouped[t.category].push(t);
+  });
+
+  // Get all categories sorted by order
+  const allCategoryIds = Object.keys(CATEGORIES).sort((a, b) =>
+    (CATEGORIES[a].order || 99) - (CATEGORIES[b].order || 99)
+  );
+
+  allCategoryIds.forEach(catId => {
+    const cat = CATEGORIES[catId];
+    const types = grouped[catId] || [];
+
+    const section = document.createElement('div');
+    section.className = 'category-section';
+
+    // Category title
+    const countText = types.length > 0 ? `${types.length} 个类型` : '';
+    section.innerHTML = `
+      <div class="category-title">
+        <span class="cat-icon">${cat.icon}</span>
+        <span>${cat.name}</span>
+        <span class="cat-count">${countText}</span>
+      </div>
+      <div class="type-grid" id="grid-${catId}"></div>
+    `;
+    container.appendChild(section);
+
+    const grid = section.querySelector(`#grid-${catId}`);
+
+    // Render type cards
+    types.forEach(type => {
+      const card = document.createElement('div');
+      card.className = 'type-card';
+      card.style.borderLeftColor = type.theme.primary;
+      card.innerHTML = `
+        <span class="card-emoji">${type.emoji}</span>
+        <div class="card-name">${type.name}</div>
+        <span class="card-fullname">${type.fullName}</span>
+        <div class="card-desc">${type.description}</div>
+        <span class="card-badge" style="background:${type.theme.accent}22;color:${type.theme.primary};">${type.tags.join(' · ')}</span>
+      `;
+      card.addEventListener('click', () => {
+        navigateTo('game', { type: type.id });
+      });
+      grid.appendChild(card);
+    });
+
+    // Add placeholder cards for categories with no types yet
+    if (types.length === 0) {
+      const placeholder = document.createElement('div');
+      placeholder.className = 'type-card placeholder';
+      placeholder.innerHTML = `
+        <span class="card-emoji">🔮</span>
+        <div class="card-name">更多类型</div>
+        <span class="card-fullname">Coming Soon</span>
+        <div class="coming-soon">🚀 即将推出</div>
+      `;
+      grid.appendChild(placeholder);
+    }
+  });
+
+  // If attachment category has no types yet, show placeholders
+  if (!grouped['attachment'] || grouped['attachment'].length === 0) {
+    // Already handled by the loop above
+  }
+}
+
+// ============================================================
 // 屏幕切换
-// ============================
+// ============================================================
 function showScreen(id) {
   document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
+  const el = document.getElementById(id);
+  if (el) el.classList.add('active');
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ============================
+// ============================================================
+// 欢迎页
+// ============================================================
+function showWelcome(type) {
+  const isWinback = type.category === 'winback';
+  const baseName = isWinback ? type.name.replace('挽回 ', '') : type.name;
+
+  document.getElementById('welcome-emoji').textContent = type.emoji;
+  document.getElementById('welcome-title').textContent = isWinback
+    ? `挽回和 ${baseName} 的感情`
+    : `挑战和 ${type.name} 谈恋爱`;
+  document.getElementById('welcome-subtitle').textContent = isWinback
+    ? '12关挽回测试 · 你还有机会吗？'
+    : '12关闯关测试 · 你准备好了吗？';
+  document.getElementById('welcome-big-emoji').textContent = type.emoji;
+  document.getElementById('welcome-question').textContent = isWinback
+    ? `你能重新赢回${baseName}的心吗？`
+    : `你能接住${type.name}的心吗？`;
+  document.getElementById('welcome-desc').innerHTML = `${type.name}——${type.fullName}<br>${type.description}`;
+
+  // Update game screen header
+  document.getElementById('game-emoji').textContent = type.emoji;
+  document.getElementById('game-title').textContent = `挑战 ${type.name} 谈恋爱`;
+
+  // Update win/lose headers
+  document.getElementById('win-emoji').textContent = type.emoji;
+  document.getElementById('win-type-title').textContent = `挑战 ${type.name} 谈恋爱`;
+  document.getElementById('lose-emoji').textContent = type.emoji;
+  document.getElementById('lose-type-title').textContent = `挑战 ${type.name} 谈恋爱`;
+
+  showScreen('screen-welcome');
+}
+
+// ============================================================
 // 开始游戏
-// ============================
+// ============================================================
 function startGame() {
+  if (!currentType) {
+    navigateTo('home');
+    return;
+  }
   currentLevel = 0;
   lives = 3;
   score = 0;
@@ -648,16 +2926,16 @@ function startGame() {
   renderLevel();
 }
 
-// ============================
+// ============================================================
 // 重新开始
-// ============================
+// ============================================================
 function restartGame() {
   startGame();
 }
 
-// ============================
+// ============================================================
 // 更新生命显示
-// ============================
+// ============================================================
 function updateLivesDisplay() {
   const container = document.getElementById('lives-display');
   let html = '';
@@ -667,13 +2945,13 @@ function updateLivesDisplay() {
   container.innerHTML = html;
 }
 
-// ============================
+// ============================================================
 // 渲染关卡
-// ============================
+// ============================================================
 function renderLevel() {
   answered = false;
-  const q = questions[currentLevel];
-  const progress = ((currentLevel) / 12) * 100;
+  const q = currentType.questions[currentLevel];
+  const progress = (currentLevel / 12) * 100;
 
   document.getElementById('progress-fill').style.width = progress + '%';
   document.getElementById('progress-text').textContent = `第 ${currentLevel + 1} / 12 关`;
@@ -709,21 +2987,21 @@ function renderLevel() {
   document.getElementById('screen-game').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ============================
+// ============================================================
 // 选择选项
-// ============================
+// ============================================================
 function selectOption(origIdx) {
   if (answered) return;
   answered = true;
 
-  const q = questions[currentLevel];
+  const q = currentType.questions[currentLevel];
   const chosen = q.options[origIdx];
   const allBtns = document.querySelectorAll('#options-container .option-btn');
 
   // 禁用所有按钮
   allBtns.forEach(b => b.classList.add('disabled'));
 
-  // 标记正确选项和用户所选（通过 data-orig-idx 匹配）
+  // 标记正确选项和用户所选
   allBtns.forEach(b => {
     const oi = parseInt(b.getAttribute('data-orig-idx'));
     if (q.options[oi].correct) b.classList.add('correct');
@@ -764,9 +3042,9 @@ function selectOption(origIdx) {
   feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 
-// ============================
+// ============================================================
 // 下一关
-// ============================
+// ============================================================
 function nextLevel() {
   currentLevel++;
   if (currentLevel >= 12) {
@@ -777,29 +3055,84 @@ function nextLevel() {
   document.getElementById('screen-game').scrollIntoView({ behavior: 'smooth' });
 }
 
-// ============================
+// ============================================================
 // 游戏结束
-// ============================
+// ============================================================
 function endGame(won) {
   if (won) {
     const tags = ['灵魂捕手', '心灵读手', '理想爱侣', '浪漫骑士'];
     const tag = tags[Math.min(score - 1, tags.length - 1)] || tags[0];
     document.getElementById('win-score').textContent = score + '/12';
     document.getElementById('win-tag').textContent = '🏅 ' + tag;
-    document.getElementById('win-quote').innerHTML =
-      '「谢谢你看懂了我藏在壳里的那颗心。<br>你让我觉得，也许理想主义真的可以在这个世界存活下去。」';
+    document.getElementById('win-quote').innerHTML = currentType.winQuotes[0] ||
+      '「谢谢你。你真的懂了。」';
     document.getElementById('win-lives-left').textContent =
       lives === 3 ? '完美通关！一条命都没掉！' :
       lives === 2 ? '剩 2 条命通关，表现不错！' :
       '剩 1 条命惊险通关！下次争取零失误！';
     showScreen('screen-win');
+    navigateTo('win', {
+      type: currentType.id,
+      score: score,
+      lives: lives,
+      level: currentLevel + 1
+    });
   } else {
     document.getElementById('lose-progress').textContent =
       `闯到第 ${currentLevel + 1} 关 · 答对 ${score} 题`;
+    document.getElementById('lose-msg').textContent = currentType.loseMsg ||
+      '别灰心，再来一次吧！';
     showScreen('screen-lose');
+    navigateTo('lose', {
+      type: currentType.id,
+      score: score,
+      lives: lives,
+      level: currentLevel + 1
+    });
   }
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
+
+// ============================================================
+// 专门的结果页渲染（从URL恢复状态时使用）
+// ============================================================
+function showWinScreen() {
+  const tags = ['灵魂捕手', '心灵读手', '理想爱侣', '浪漫骑士'];
+  const tag = tags[Math.min(score - 1, tags.length - 1)] || tags[0];
+  document.getElementById('win-emoji').textContent = currentType.emoji;
+  document.getElementById('win-type-title').textContent = `挑战 ${currentType.name} 谈恋爱`;
+  document.getElementById('win-score').textContent = score + '/12';
+  document.getElementById('win-tag').textContent = '🏅 ' + tag;
+  document.getElementById('win-quote').innerHTML = currentType.winQuotes[0] ||
+    '「谢谢你。你真的懂了。」';
+  document.getElementById('win-lives-left').textContent =
+    lives === 3 ? '完美通关！一条命都没掉！' :
+    lives === 2 ? '剩 2 条命通关，表现不错！' :
+    '剩 1 条命惊险通关！下次争取零失误！';
+  showScreen('screen-win');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showLoseScreen() {
+  document.getElementById('lose-emoji').textContent = currentType.emoji;
+  document.getElementById('lose-type-title').textContent = `挑战 ${currentType.name} 谈恋爱`;
+  document.getElementById('lose-progress').textContent =
+    `闯到第 ${currentLevel} 关 · 答对 ${score} 题`;
+  document.getElementById('lose-msg').textContent = currentType.loseMsg ||
+    '别灰心，再来一次吧！';
+  showScreen('screen-lose');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================================
+// 初始化
+// ============================================================
+function init() {
+  renderSelectPage();
+  handleRoute();
+}
+
+init();
 </script>
 
 </body>
