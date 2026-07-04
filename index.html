@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+<title>挑战和INFP谈恋爱 · 12关闯关</title>
+<style>
+  :root {
+    --bg: #f8f6f2;
+    --card: #fff;
+    --primary: #6c5b7b;
+    --accent: #c06c84;
+    --gold: #d4a574;
+    --text: #2c2c2c;
+    --text-light: #6b6b6b;
+    --success: #6aab73;
+    --danger: #e07b7b;
+    --border: #e8e4df;
+    --shadow: 0 2px 12px rgba(0,0,0,0.06);
+    --radius: 16px;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { height:100%; overflow-x:hidden; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+  .app {
+    width: 100%;
+    max-width: 420px;
+    min-height: 100vh;
+    padding: 20px 16px 40px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ===== 头部 ===== */
+  .header {
+    text-align: center;
+    padding: 32px 0 8px;
+  }
+  .header .emoji { font-size:48px; display:block; margin-bottom:8px; }
+  .header h1 {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: 1px;
+  }
+  .header .subtitle {
+    font-size: 13px;
+    color: var(--text-light);
+    margin-top: 4px;
+  }
+
+  /* ===== 进度条 ===== */
+  .progress-wrap {
+    margin: 8px 0 16px;
+  }
+  .progress-bar {
+    height: 6px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--primary));
+    border-radius: 3px;
+    transition: width 0.4s ease;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 6px;
+    font-size: 12px;
+    color: var(--text-light);
+  }
+  .lives { display:flex; align-items:center; gap:4px; }
+  .lives .heart { font-size:14px; }
+  .lives .heart.lost { opacity:0.25; }
+
+  /* ===== 页面容器 ===== */
+  .screen { display:none; flex:1; flex-direction:column; }
+  .screen.active { display:flex; }
+
+  /* ===== 欢迎页 ===== */
+  .welcome { align-items:center; justify-content:center; text-align:center; }
+  .welcome .big-emoji { font-size:80px; display:block; margin-bottom:20px; }
+  .welcome h2 { font-size:22px; margin-bottom:8px; color:var(--primary); }
+  .welcome p { font-size:14px; color:var(--text-light); line-height:1.7; margin-bottom:6px; }
+  .welcome .rules {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin: 20px 0;
+    text-align: left;
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+  .welcome .rules h3 { font-size:15px; color:var(--accent); margin-bottom:10px; }
+  .welcome .rules li {
+    font-size:13px; color:var(--text);
+    margin:8px 0; padding-left:6px;
+    list-style: none;
+    display:flex; align-items:flex-start; gap:8px;
+  }
+  .welcome .rules li .dot {
+    color:var(--accent); font-weight:700; flex-shrink:0;
+  }
+
+  /* ===== 关卡页 ===== */
+  .level-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 24px 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 16px;
+  }
+  .level-title {
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 4px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  .level-name {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--primary);
+    margin-bottom: 12px;
+  }
+  .scene {
+    background: #fdf6f0;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #5a4e3c;
+    border-left: 3px solid var(--gold);
+    margin-bottom: 16px;
+  }
+  .scene strong { color: var(--primary); }
+  .question {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 16px;
+  }
+
+  /* ===== 选项按钮 ===== */
+  .options { display:flex; flex-direction:column; gap:10px; }
+  .option-btn {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg);
+    border: 2px solid transparent;
+    border-radius: 12px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+    position: relative;
+  }
+  .option-btn:active { transform: scale(0.98); }
+  .option-btn .label {
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--text-light);
+    flex-shrink: 0;
+    transition: all 0.2s ease;
+  }
+  .option-btn.correct {
+    border-color: var(--success);
+    background: #f0faf2;
+  }
+  .option-btn.correct .label {
+    background: var(--success);
+    color: #fff;
+  }
+  .option-btn.wrong {
+    border-color: var(--danger);
+    background: #fef2f2;
+  }
+  .option-btn.wrong .label {
+    background: var(--danger);
+    color: #fff;
+  }
+  .option-btn.disabled {
+    pointer-events: none;
+    opacity: 0.85;
+  }
+
+  /* ===== 反馈弹窗 ===== */
+  .feedback {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 12px;
+    box-shadow: var(--shadow);
+    display: none;
+    animation: slideUp 0.3s ease;
+  }
+  .feedback.show { display:block; }
+  .feedback .result-icon {
+    font-size: 36px;
+    text-align: center;
+    margin-bottom: 8px;
+  }
+  .feedback .result-text {
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--text);
+    text-align: center;
+    margin-bottom: 16px;
+  }
+  .feedback .result-text strong { color: var(--primary); }
+
+  @keyframes slideUp {
+    from { opacity:0; transform:translateY(12px); }
+    to { opacity:1; transform:translateY(0); }
+  }
+
+  /* ===== 按钮 ===== */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: 25px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+  .btn:active { transform: scale(0.97); }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), var(--primary));
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(108,91,123,0.3);
+  }
+  .btn-outline {
+    background: var(--card);
+    color: var(--primary);
+    border: 2px solid var(--primary);
+  }
+  .btn-small {
+    width: auto;
+    display: inline-block;
+    padding: 8px 20px;
+    font-size: 13px;
+  }
+
+  /* ===== 结果页 ===== */
+  .result-screen { align-items:center; justify-content:center; text-align:center; }
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    box-shadow: var(--shadow);
+    width: 100%;
+  }
+  .result-card .trophy { font-size:72px; display:block; margin-bottom:16px; }
+  .result-card h2 { font-size:22px; color:var(--primary); margin-bottom:8px; }
+  .result-card .score {
+    font-size: 48px;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .result-card .tag {
+    display: inline-block;
+    background: linear-gradient(135deg, #fdf6f0, #fce4ec);
+    color: var(--accent);
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    margin: 8px 0 16px;
+  }
+  .result-card .quote {
+    font-size: 14px;
+    line-height: 1.8;
+    color: var(--text-light);
+    font-style: italic;
+    margin-bottom: 24px;
+  }
+  .result-card .btn { margin-bottom: 10px; }
+
+  .game-over .trophy { font-size: 56px; }
+  .game-over h2 { color: var(--danger); }
+
+  /* ===== 呼吸动画 ===== */
+  @keyframes breathe {
+    0%, 100% { transform:scale(1); }
+    50% { transform:scale(1.08); }
+  }
+  .breathing { animation: breathe 2s ease-in-out infinite; }
+</style>
+</head>
+<body>
+
+<div class="app" id="app">
+
+  <!-- ==================== 欢迎页 ==================== -->
+  <div class="screen active" id="screen-welcome">
+    <div class="header">
+      <span class="emoji">🦋</span>
+      <h1>挑战和 INFP 谈恋爱</h1>
+      <p class="subtitle">12关闯关测试 · 你准备好了吗？</p>
+    </div>
+    <div class="welcome" style="display:flex;">
+      <span class="big-emoji">💘</span>
+      <h2>你能接住INFP的心吗？</h2>
+      <p>INFP——理想主义的调停者<br>敏感、浪漫、追求灵魂伴侣</p>
+      <div class="rules">
+        <h3>📋 闯关规则</h3>
+        <ul>
+          <li><span class="dot">🛡️</span> 你有 <strong>3条命</strong>，选错扣1条</li>
+          <li><span class="dot">🏆</span> 共 <strong>12关</strong>，全部通过即为通关</li>
+          <li><span class="dot">💔</span> 命用完则闯关失败，需重新开始</li>
+          <li><span class="dot">✨</span> 每关只有一个正确答案</li>
+        </ul>
+      </div>
+      <button class="btn btn-primary" onclick="startGame()">开始挑战 ❤️</button>
+    </div>
+  </div>
+
+  <!-- ==================== 答题页 ==================== -->
+  <div class="screen" id="screen-game">
+    <div class="header" style="padding-top:16px;">
+      <span class="emoji">🦋</span>
+      <h1>挑战 INFP 谈恋爱</h1>
+    </div>
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+      <div class="progress-info">
+        <span id="progress-text">第 1 / 12 关</span>
+        <span class="lives" id="lives-display">
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+          <span class="heart">❤️</span>
+        </span>
+      </div>
+    </div>
+    <div class="level-card" id="level-card">
+      <div class="level-title" id="level-title"></div>
+      <div class="level-name" id="level-name"></div>
+      <div class="scene" id="level-scene"></div>
+      <div class="question" id="level-question"></div>
+      <div class="options" id="options-container"></div>
+    </div>
+    <div class="feedback" id="feedback">
+      <div class="result-icon" id="result-icon"></div>
+      <div class="result-text" id="result-text"></div>
+      <button class="btn btn-primary" id="btn-next" onclick="nextLevel()">下一关 →</button>
+    </div>
+  </div>
+
+  <!-- ==================== 通关页 ==================== -->
+  <div class="screen" id="screen-win">
+    <div class="header">
+      <span class="emoji">🦋</span>
+      <h1>挑战 INFP 谈恋爱</h1>
+    </div>
+    <div class="result-screen" style="display:flex;">
+      <div class="result-card">
+        <span class="trophy breathing">🏆</span>
+        <h2>恭喜通关！</h2>
+        <div class="score" id="win-score">12/12</div>
+        <div class="tag" id="win-tag"></div>
+        <p class="quote" id="win-quote"></p>
+        <p style="font-size:13px;color:var(--text-light);margin-bottom:16px;" id="win-lives-left"></p>
+        <button class="btn btn-primary" onclick="restartGame()">🔥 再挑战一次</button>
+        <button class="btn btn-outline" onclick="restartGame()" style="margin-top:6px;">📋 解锁其他 MBTI</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== 失败页 ==================== -->
+  <div class="screen" id="screen-lose">
+    <div class="header">
+      <span class="emoji">🦋</span>
+      <h1>挑战 INFP 谈恋爱</h1>
+    </div>
+    <div class="result-screen game-over" style="display:flex;">
+      <div class="result-card">
+        <span class="trophy">💔</span>
+        <h2>闯关失败</h2>
+        <div class="score" style="font-size:36px;background:linear-gradient(135deg,#e07b7b,#c06c84);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;" id="lose-progress"></div>
+        <p style="font-size:14px;color:var(--text-light);line-height:1.7;margin:12px 0 20px;">
+          INFP的心很柔软，需要用心去感受。<br>别灰心，再来一次吧！
+        </p>
+        <button class="btn btn-primary" onclick="restartGame()">🔄 重新挑战</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ============================
+// 题库数据
+// ============================
+const questions = [
+  {
+    id: 1,
+    title: "第1关：初次约会",
+    scene: "你和INFP第一次单独约会，Ta选了一家安静的独立书店咖啡馆。你们坐下后，Ta轻轻摩挲着咖啡杯，似乎有点紧张。",
+    question: "你会怎么开启话题？",
+    options: [
+      { label: "A", text: "你平时喜欢看什么类型的书？我最近在读一本关于存在主义的书，很有意思。", correct: true,
+        feedback: "INFP眼睛亮了！Ta最喜欢深度精神交流，这个开场直击Ta的心。" },
+      { label: "B", text: "这家店环境真不错，你经常来吗？我平时很少来这种地方。", correct: false,
+        feedback: "Ta觉得你在客套，有点失望。" },
+      { label: "C", text: "你今天穿得真好看，这裙子很配你。", correct: false,
+        feedback: "INFP不喜欢被过度关注外表，会觉得你肤浅。" },
+      { label: "D", text: "我其实很少看书，你有什么推荐吗？简单点的。", correct: false,
+        feedback: "「简单点的」让INFP觉得你在敷衍，不愿意付出精神努力。" }
+    ]
+  },
+  {
+    id: 2,
+    title: "第2关：突如其来的情绪低落",
+    scene: "你们在一起一个月了，这天约会时，INFP明显心不在焉，话很少，笑容也很勉强。你问Ta怎么了，Ta说「没事，可能有点累」。",
+    question: "你接下来会怎么做？",
+    options: [
+      { label: "A", text: "安静地握住Ta的手，轻声说：「没关系，不想说就不说，我在这陪你。」", correct: true,
+        feedback: "INFP感受到了无条件的接纳，内心防线松动了。" },
+      { label: "B", text: "你肯定有事，说出来嘛，我帮你分析分析。", correct: false,
+        feedback: "Ta还没准备好，逼问会让Ta更加退缩。" },
+      { label: "C", text: "那我们换个开心点的地方吧，去吃点好的心情就好了！", correct: false,
+        feedback: "INFP觉得你在回避Ta的情绪，不被理解。" },
+      { label: "D", text: "当作没注意到，继续聊自己的事。", correct: false,
+        feedback: "Ta会觉得你根本不在乎Ta的感受。" }
+    ]
+  },
+  {
+    id: 3,
+    title: "第3关：你忘记了重要纪念日",
+    scene: "今天是你们恋爱100天的日子，但你因为工作太忙完全忘记了。晚上见面时，你发现INFP精心准备了晚餐和小礼物。你看到Ta期待的眼神，突然意识到今天是什么日子……",
+    question: "你的反应是？",
+    options: [
+      { label: "A", text: "立刻放下东西，拥抱Ta，真诚地说：「天哪我真的忘了，对不起！这几天压力太大了脑子都是乱的。你太用心了，我好感动。」", correct: true,
+        feedback: "真诚的道歉+情感表达，INFP最吃这一套。" },
+      { label: "B", text: "抱歉我忘了，别生气嘛，周末带你去吃大餐补上。", correct: false,
+        feedback: "「补偿式」回应让INFP觉得你在走形式，没有真心。" },
+      { label: "C", text: "100天有什么好过的呀，重要的日子还多着呢。", correct: false,
+        feedback: "Ta觉得你根本不重视这段感情。" },
+      { label: "D", text: "赶紧点开外卖App：「我现在就给你订束花！」", correct: false,
+        feedback: "临时补救显得刻意，INFP看重的是真心而非物质。" }
+    ]
+  },
+  {
+    id: 4,
+    title: "第4关：你们发生了第一次争执",
+    scene: "你们讨论一个社会话题时，观点完全相反。INFP越说越激动，最后眼眶红了，说了一句：「你根本不懂我在说什么。」然后沉默了。",
+    question: "你会怎么做？",
+    options: [
+      { label: "A", text: "深吸一口气，放软语气：「可能我刚才没表达好。你能再跟我说一遍你的想法吗？我想认真听。」", correct: true,
+        feedback: "你放下了输赢，选择了理解。INFP的眼泪变成了笑容。" },
+      { label: "B", text: "继续摆事实讲道理，试图说服Ta。", correct: false,
+        feedback: "INFP觉得你在「碾压」Ta，而不是在交流。" },
+      { label: "C", text: "好吧好吧你说的都对，我们不吵了。", correct: false,
+        feedback: "敷衍式妥协比吵架更伤人，INFP会觉得「你根本不想和我沟通」。" },
+      { label: "D", text: "直接走开，让彼此冷静一下。", correct: false,
+        feedback: "冷处理=冷漠，INFP会在你离开的时间里脑补一万种分手的理由。" }
+    ]
+  },
+  {
+    id: 5,
+    title: "第5关：Ta想要独处",
+    scene: "交往两个月后，INFP突然说：「我这周末想一个人待着，不出去了。」Ta的语气很平静，但你觉得不太寻常。",
+    question: "你的回应是？",
+    options: [
+      { label: "A", text: "「好呀，那你好好充电。不过如果有任何事想找我，我随时在。」然后真的不去打扰Ta。", correct: true,
+        feedback: "你给了Ta空间又不失温暖，INFP会觉得你真的很懂Ta。" },
+      { label: "B", text: "你是不是生气了？是不是我哪里做得不好？", correct: false,
+        feedback: "过度解读会让INFP觉得和你在一起很累，连休息都要解释。" },
+      { label: "C", text: "好吧……那你什么时候想见我？明天行吗？", correct: false,
+        feedback: "刚给空间就急着约下次，INFP会觉得压力又回来了。" },
+      { label: "D", text: "周末给你点惊喜！我偷偷过去找你！", correct: false,
+        feedback: "惊喜变惊吓，INFP的独处时间被破坏会非常烦躁。" }
+    ]
+  },
+  {
+    id: 6,
+    title: "第6关：Ta分享了一件「小事」",
+    scene: "INFP兴奋地给你看Ta刚写的一首小诗，眼睛亮晶晶地等你评价。诗写得……说实话，有点抽象，你没太看懂。",
+    question: "你该怎么说？",
+    options: [
+      { label: "A", text: "认真读两遍，然后说：「我喜欢这句——『月光在茶杯里打了个盹』，很有画面感。你写的时候在想什么？」", correct: true,
+        feedback: "你抓住了具体的闪光点并表达好奇，INFP会滔滔不绝地跟你分享创作心路。" },
+      { label: "B", text: "写得不错呀！你真有才华！", correct: false,
+        feedback: "太笼统的夸奖=没认真看，INFP能敏锐地察觉到你在敷衍。" },
+      { label: "C", text: "说实话我没太看懂，但你喜欢就好。", correct: false,
+        feedback: "虽然诚实，但INFP会觉得你不愿意走进Ta的世界。" },
+      { label: "D", text: "你怎么不写点通俗易懂的东西？", correct: false,
+        feedback: "这是对INFP灵魂的直接否定，伤害值拉满。" }
+    ]
+  },
+  {
+    id: 7,
+    title: "第7关：你的朋友不喜欢Ta",
+    scene: "你带INFP参加朋友聚会，Ta全程很安静。聚会结束后，你的好朋友私聊你说：「你对象好闷啊，你们真的合适吗？」",
+    question: "你该怎么办？",
+    options: [
+      { label: "A", text: "对朋友说：「Ta只是慢热，熟了以后很可爱的。下次换个安静点的地方，你再给Ta一次机会？」同时不把朋友的话告诉INFP。", correct: true,
+        feedback: "你在外面保护了Ta，也没让负面评价影响你们的关系。INFP如果知道了会很感动。" },
+      { label: "B", text: "把朋友的话告诉INFP，然后说「你得外向一点才行」。", correct: false,
+        feedback: "INFP会觉得自己被嫌弃，自信心受到严重打击。" },
+      { label: "C", text: "以后再也不带INFP见朋友了。", correct: false,
+        feedback: "隔离不是保护，INFP会觉得你在「藏」着Ta。" },
+      { label: "D", text: "跟朋友吵一架：「你不懂Ta就别乱说！」", correct: false,
+        feedback: "过度维护反而会让朋友和INFP都尴尬。" }
+    ]
+  },
+  {
+    id: 8,
+    title: "第8关：Ta为你做了一件「没用」的礼物",
+    scene: "INFP花了两个星期，用手工做了一本你们两个人的「恋爱手账」，里面有你们的照片、电影票根、手写的小故事。你翻了翻，发现有些页被胶水弄皱了，字迹也有点歪。",
+    question: "你的反应是？",
+    options: [
+      { label: "A", text: "一页一页认真翻完，然后抱紧Ta：「这是我收到过最用心的礼物。以后我们每年做一本好吗？」", correct: true,
+        feedback: "你看到了背后的心意而非成品的不完美。INFP会记住这句话很久很久。" },
+      { label: "B", text: "「哇好可爱！不过你可以买个更好的本子，这个纸太薄了。」", correct: false,
+        feedback: "在INFP听来=「你做的东西不够好」，心血被否定。" },
+      { label: "C", text: "笑着翻了两下放在一边：「谢谢宝贝！」", correct: false,
+        feedback: "敷衍的态度让INFP觉得自己的心意不被珍视。" },
+      { label: "D", text: "「你花那么多时间做这个干嘛呀，买一本不就行了。」", correct: false,
+        feedback: "这句话等于在说「你的用心一文不值」。" }
+    ]
+  },
+  {
+    id: 9,
+    title: "第9关：Ta突然说要辞职去追梦",
+    scene: "INFP有一天认真地对你说：「我想辞职了，我想去学插画/做音乐/写小说。我知道这不太现实，但是……」Ta看着你，既期待又害怕。",
+    question: "你的回应是？",
+    options: [
+      { label: "A", text: "「我支持你追梦。不过我们可以一起做个计划——先存几个月的生活费，业余时间试试水，感觉稳了再辞职，好吗？」", correct: true,
+        feedback: "你既没有否定梦想，也给了现实的保护。INFP会觉得「有人懂我，还愿意帮我落地」。这就是Ta想要的安全感。" },
+      { label: "B", text: "「别傻了，现实点行不行？你画画能养活自己吗？」", correct: false,
+        feedback: "直接否定梦想=否定INFP的灵魂，Ta会非常受伤。" },
+      { label: "C", text: "「去吧！我养你！」", correct: false,
+        feedback: "虽然听起来很浪漫，但INFP内心会觉得压力——「万一失败了呢？」不加思考的支持显得不成熟。" },
+      { label: "D", text: "「等你找到下份工作再说吧。」", correct: false,
+        feedback: "你完全回避了Ta真正想说的——Ta在试探你支不支持Ta的梦想。" }
+    ]
+  },
+  {
+    id: 10,
+    title: "第10关：Ta的「小习惯」让你不舒服",
+    scene: "INFP有一个让你不太舒服的习惯——比如，Ta经常在约会时走神发呆，你觉得不够投入。",
+    question: "你该怎么跟Ta沟通这件事？",
+    options: [
+      { label: "A", text: "「我注意到你有时候会走神，我在想是不是我讲的话题不够吸引你？还是你需要一点时间放空？我想知道你的感受。」", correct: true,
+        feedback: "你把问题定位在「我-你之间」而非「你-有问题」，INFP会非常愿意配合。" },
+      { label: "B", text: "你能不能跟我在一起的时候专心一点？", correct: false,
+        feedback: "「你」字开头等于指责，INFP会退缩进自己的壳里。" },
+      { label: "C", text: "每次Ta走神你就叹一口气。", correct: false,
+        feedback: "消极暗示会让INFP觉得自己怎么做都不对。" },
+      { label: "D", text: "我觉得你根本不在乎我。", correct: false,
+        feedback: "过度解读会直接引爆INFP的情绪雷区。" }
+    ]
+  },
+  {
+    id: 11,
+    title: "第11关：Ta的原生家庭问题被触发了",
+    scene: "你们在聊童年时，INFP突然沉默了，眼圈泛红但强忍着，说了一句：「有些事我不想说。」",
+    question: "你的应对是？",
+    options: [
+      { label: "A", text: "放下手里的东西，安静地坐近一点，说：「不说也没关系，我就在这儿。」", correct: true,
+        feedback: "边界感+陪伴感，这是INFP最需要的那种「安全的爱」。" },
+      { label: "B", text: "说出来会好受一点，我是你男朋友/女朋友啊。", correct: false,
+        feedback: "你越逼，Ta越关上心门。" },
+      { label: "C", text: "不想说就不说，来吃这个，超好吃！", correct: false,
+        feedback: "转移话题=回避深度，INFP会判定你「不懂我」。" },
+      { label: "D", text: "也分享一个自己不开心的经历，试图「比惨」。", correct: false,
+        feedback: "比惨=否定Ta的感受，会让Ta觉得「我的情绪不值得被重视」。" }
+    ]
+  },
+  {
+    id: 12,
+    title: "第12关：终极考验——Ta问你「你爱我什么」",
+    scene: "一个安静的夜晚，INFP靠在你的肩膀上，突然小声问：「你爱我什么？」",
+    question: "你的回答是？（这一关是重头戏）",
+    options: [
+      { label: "A", text: "认真思考后说：「爱你发呆时的样子，爱你写的诗里那种温柔，爱你会为一只流浪猫蹲在路边半小时，爱你明明自己难过却先问我『你还好吗』——最重要的是，跟你在一起，我觉得世界没那么糟糕了。」", correct: true,
+        feedback: "你不仅说出了具体特质，还提到了Ta的内在价值和你的情感体验。INFP听完会哭，然后紧紧抱住你。这是Ta一生都在等的回答。" },
+      { label: "B", text: "爱你好看，爱你温柔，爱你对我好。", correct: false,
+        feedback: "太笼统，像模板。INFP会觉得你爱的只是「女朋友」这个角色，不是真正的Ta。" },
+      { label: "C", text: "我也说不清，就是感觉对了。", correct: false,
+        feedback: "「说不清」=没走心。INFP会把这句话记很久，作为「你不够爱」的证据。" },
+      { label: "D", text: "你为什么突然问这个？是不是我做错什么了？", correct: false,
+        feedback: "你在回避问题，还把压力抛回给Ta。INFP会后悔问了这个问题。" }
+    ]
+  }
+];
+
+// ============================
+// 游戏状态
+// ============================
+let currentLevel = 0;
+let lives = 3;
+let score = 0;
+let answered = false;
+
+// ============================
+// 屏幕切换
+// ============================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================
+// 开始游戏
+// ============================
+function startGame() {
+  currentLevel = 0;
+  lives = 3;
+  score = 0;
+  answered = false;
+  updateLivesDisplay();
+  showScreen('screen-game');
+  renderLevel();
+}
+
+// ============================
+// 重新开始
+// ============================
+function restartGame() {
+  startGame();
+}
+
+// ============================
+// 更新生命显示
+// ============================
+function updateLivesDisplay() {
+  const container = document.getElementById('lives-display');
+  let html = '';
+  for (let i = 0; i < 3; i++) {
+    html += `<span class="heart ${i >= lives ? 'lost' : ''}">❤️</span>`;
+  }
+  container.innerHTML = html;
+}
+
+// ============================
+// 渲染关卡
+// ============================
+function renderLevel() {
+  answered = false;
+  const q = questions[currentLevel];
+  const progress = ((currentLevel) / 12) * 100;
+
+  document.getElementById('progress-fill').style.width = progress + '%';
+  document.getElementById('progress-text').textContent = `第 ${currentLevel + 1} / 12 关`;
+  document.getElementById('level-title').textContent = q.title;
+  document.getElementById('level-name').textContent = '';
+  document.getElementById('level-scene').innerHTML = `<strong>场景：</strong>${q.scene}`;
+  document.getElementById('level-question').innerHTML = `<strong>问题：</strong>${q.question}`;
+
+  // 随机打乱选项顺序
+  const shuffled = q.options.map((opt, i) => ({ ...opt, _origIdx: i }));
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+
+  // 渲染选项
+  const optsContainer = document.getElementById('options-container');
+  optsContainer.innerHTML = '';
+  shuffled.forEach((opt, displayIdx) => {
+    const btn = document.createElement('div');
+    btn.className = 'option-btn';
+    btn.setAttribute('data-orig-idx', opt._origIdx);
+    btn.innerHTML = `<span class="label">${String.fromCharCode(65 + displayIdx)}</span><span>${opt.text}</span>`;
+    btn.addEventListener('click', () => selectOption(opt._origIdx));
+    optsContainer.appendChild(btn);
+  });
+
+  // 隐藏反馈
+  document.getElementById('feedback').classList.remove('show');
+  document.getElementById('btn-next').style.display = 'none';
+
+  // 滚动到顶部
+  document.getElementById('screen-game').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ============================
+// 选择选项
+// ============================
+function selectOption(origIdx) {
+  if (answered) return;
+  answered = true;
+
+  const q = questions[currentLevel];
+  const chosen = q.options[origIdx];
+  const allBtns = document.querySelectorAll('#options-container .option-btn');
+
+  // 禁用所有按钮
+  allBtns.forEach(b => b.classList.add('disabled'));
+
+  // 标记正确选项和用户所选（通过 data-orig-idx 匹配）
+  allBtns.forEach(b => {
+    const oi = parseInt(b.getAttribute('data-orig-idx'));
+    if (q.options[oi].correct) b.classList.add('correct');
+    if (oi === origIdx && !chosen.correct) b.classList.add('wrong');
+  });
+
+  // 判断结果
+  if (chosen.correct) {
+    score++;
+    document.getElementById('result-icon').textContent = '✅';
+    document.getElementById('result-text').innerHTML = `<strong>回答正确！</strong><br>${chosen.feedback}`;
+  } else {
+    lives--;
+    updateLivesDisplay();
+    document.getElementById('result-icon').textContent = '❌';
+    document.getElementById('result-text').innerHTML = `<strong>踩雷了！</strong><br>${chosen.feedback}`;
+  }
+
+  // 显示反馈
+  const feedbackEl = document.getElementById('feedback');
+  feedbackEl.classList.add('show');
+
+  // 检查游戏状态
+  const btnNext = document.getElementById('btn-next');
+  if (lives <= 0) {
+    btnNext.textContent = '查看结果';
+    btnNext.onclick = () => endGame(false);
+  } else if (currentLevel >= 11) {
+    btnNext.textContent = '查看通关结果 🎉';
+    btnNext.onclick = () => endGame(true);
+  } else {
+    btnNext.textContent = '下一关 →';
+    btnNext.onclick = () => nextLevel();
+  }
+  btnNext.style.display = 'block';
+
+  // 滚动到反馈
+  feedbackEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ============================
+// 下一关
+// ============================
+function nextLevel() {
+  currentLevel++;
+  if (currentLevel >= 12) {
+    endGame(true);
+    return;
+  }
+  renderLevel();
+  document.getElementById('screen-game').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ============================
+// 游戏结束
+// ============================
+function endGame(won) {
+  if (won) {
+    const tags = ['灵魂捕手', '心灵读手', '理想爱侣', '浪漫骑士'];
+    const tag = tags[Math.min(score - 1, tags.length - 1)] || tags[0];
+    document.getElementById('win-score').textContent = score + '/12';
+    document.getElementById('win-tag').textContent = '🏅 ' + tag;
+    document.getElementById('win-quote').innerHTML =
+      '「谢谢你看懂了我藏在壳里的那颗心。<br>你让我觉得，也许理想主义真的可以在这个世界存活下去。」';
+    document.getElementById('win-lives-left').textContent =
+      lives === 3 ? '完美通关！一条命都没掉！' :
+      lives === 2 ? '剩 2 条命通关，表现不错！' :
+      '剩 1 条命惊险通关！下次争取零失误！';
+    showScreen('screen-win');
+  } else {
+    document.getElementById('lose-progress').textContent =
+      `闯到第 ${currentLevel + 1} 关 · 答对 ${score} 题`;
+    showScreen('screen-lose');
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+
+</body>
+</html>
